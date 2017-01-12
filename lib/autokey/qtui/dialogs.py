@@ -20,8 +20,8 @@ import logging, sys, os, re
 #from PyKDE4.kdeui import KApplication, KXmlGuiWindow, KStandardAction, KIcon, KTextEdit, KAction, KStandardShortcut
 from PyKDE4.kdeui import *
 from PyKDE4.kdecore import i18n
-from PyQt4.QtGui import *
-from PyQt4.QtCore import SIGNAL, Qt, QRegExp
+from PyQt5.QtGui import *
+from PyQt5.QtCore import SIGNAL, Qt, QRegExp
 
 __all__ = ["validate", "EMPTY_FIELD_REGEX", "AbbrSettingsDialog", "HotkeySettingsDialog", "WindowFilterSettingsDialog", "RecordDialog"]
 

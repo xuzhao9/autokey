@@ -19,8 +19,8 @@
 import logging, sys
 from PyKDE4.kdeui import KMenu, KAction, KActionMenu, KApplication
 #from PyKDE4.kdecore import ki18n, KAboutData, KCmdLineArgs
-from PyQt4.QtGui import QCursor
-from PyQt4.QtCore import SIGNAL, Qt
+from PyQt5.QtGui import QCursor
+from PyQt5.QtCore import SIGNAL, Qt
 
 from ..configmanager import *
 

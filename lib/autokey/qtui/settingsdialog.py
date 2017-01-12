@@ -20,8 +20,8 @@ import sys
 from PyKDE4.kdeui import *
 from PyKDE4.kio import KFileDialog
 from PyKDE4.kdecore import i18n, KAutostart
-from PyQt4.QtGui import *
-from PyQt4.QtCore import SIGNAL, Qt
+from PyQt5.QtGui import *
+from PyQt5.QtCore import SIGNAL, Qt
 
 from ..configmanager import *
 from .. import iomediator, interface, model

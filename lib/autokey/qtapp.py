@@ -16,21 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import common
+from autokey import common
 common.USING_QT = True
 
-import sys, traceback, os.path, signal, logging, logging.handlers, subprocess, queue, time, dbus, dbus.mainloop.qt
+import sys, traceback, os.path, signal, logging, logging.handlers, subprocess, queue, time, dbus
 from PyKDE4.kdecore import KCmdLineArgs, KCmdLineOptions, KAboutData, ki18n, i18n
 from PyKDE4.kdeui import KMessageBox, KApplication
-from PyQt4.QtCore import SIGNAL, Qt, QObject, QEvent
-from PyQt4.QtGui import QCursor
+from PyQt5.QtCore import SIGNAL, Qt, QObject, QEvent
+from PyQt5.QtGui import QCursor
 
-from . import service, monitor
-from .qtui.notifier import Notifier
-from .qtui.popupmenu import PopupMenu
-from .qtui.configwindow import ConfigWindow
-from .configmanager import *
-from .common import *
+from autokey import service, monitor
+from autokey.qtui.notifier import Notifier
+from autokey.qtui.popupmenu import PopupMenu
+from autokey.qtui.configwindow import ConfigWindow
+from autokey.configmanager import *
+from autokey.common import *
 
 PROGRAM_NAME = ki18n("AutoKey")
 DESCRIPTION = ki18n("Desktop automation utility")
@@ -152,7 +152,7 @@ class Application:
         self.configWindow = None
         self.monitor.start()
 
-        dbus.mainloop.qt.DBusQtMainLoop(set_as_default=True)
+        dbus.mainloop.pyqt5.DBusQtMainLoop(set_as_default=True)
         self.dbusService = common.AppService(self)
         
         if ConfigManager.SETTINGS[IS_FIRST_RUN] or configure:

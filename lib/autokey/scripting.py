@@ -19,7 +19,7 @@ import subprocess, threading, time, re
 from . import common, model, iomediator
 
 if common.USING_QT:
-    from PyQt4.QtGui import QClipboard, QApplication
+    from PyQt5.QtGui import QClipboard, QApplication
 else:
     from gi.repository import Gtk, Gdk
 

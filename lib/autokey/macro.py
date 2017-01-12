@@ -6,7 +6,7 @@ from . import common
 if common.USING_QT:
     from PyKDE4.kdecore import ki18n
     from PyKDE4.kdeui import KMenu, KAction
-    from PyQt4.QtCore import SIGNAL
+    from PyQt5.QtCore import SIGNAL
     _ = ki18n
 
     class MacroAction(KAction):

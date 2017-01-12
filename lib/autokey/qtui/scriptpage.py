@@ -6,7 +6,7 @@
 # WARNING! All changes to this file will be lost.
 from PyKDE4 import kdecore
 from PyKDE4 import kdeui
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -56,6 +56,6 @@ class Ui_ScriptPage(object):
         self.promptCheckbox.setText(kdecore.i18n(_fromUtf8("Always prompt before running this script")))
         self.showInTrayCheckbox.setText(kdecore.i18n(_fromUtf8("Show in notification icon menu")))
 
-from PyQt4 import Qsci
+from PyQt5 import Qsci
 from PyKDE4.kdeui import KUrlLabel, KSeparator
 from .configwindow import SettingsWidget

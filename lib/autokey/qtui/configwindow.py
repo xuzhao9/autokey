@@ -19,9 +19,9 @@ import logging, sys, os, webbrowser, subprocess, time
 from PyKDE4.kio import *
 from PyKDE4.kdeui import *
 from PyKDE4.kdecore import i18n, ki18n, KUrl
-from PyQt4.QtGui import *
-from PyQt4.QtCore import SIGNAL, Qt
-from PyQt4 import Qsci
+from PyQt5.QtGui import *
+from PyQt5.QtCore import SIGNAL, Qt
+from PyQt5 import Qsci
 from .. import common
 
 #CONFIG_WINDOW_TITLE = i18n(common.CONFIG_WINDOW_TITLE)

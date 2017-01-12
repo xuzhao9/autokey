@@ -6,7 +6,7 @@
 # WARNING! All changes to this file will be lost.
 from PyKDE4 import kdecore
 from PyKDE4 import kdeui
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

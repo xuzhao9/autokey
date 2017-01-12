@@ -17,8 +17,8 @@
 
 from PyKDE4.kdeui import KNotification, KSystemTrayIcon, KIcon, KStandardAction, KToggleAction
 from PyKDE4.kdecore import ki18n, i18n
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QSystemTrayIcon
+from PyQt5.QtCore import SIGNAL
+from PyQt5.QtGui import QSystemTrayIcon
 
 from . import popupmenu
 from ..configmanager import *
