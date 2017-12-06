@@ -20,6 +20,9 @@ from . import common, model, iomediator
 
 if common.USING_QT:
     from PyQt4.QtGui import QClipboard, QApplication
+elif common.USING_QT5:
+    from PyQt5.QtGui import QClipboard
+    from PyQt5.QtWidgets import QApplication
 else:
     from gi.repository import Gtk, Gdk
 

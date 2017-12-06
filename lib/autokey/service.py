@@ -25,6 +25,8 @@ from autokey.configmanager import *
 if common.USING_QT:
     from autokey.qtui.popupmenu import *
     from PyKDE4.kdecore import i18n
+elif common.USING_QT5:
+    from autokey.qt5ui.popupmenu import *
 else:
     from autokey.gtkui.popupmenu import *
 from autokey.macro import MacroManager
@@ -440,6 +442,9 @@ class ScriptRunner:
         if common.USING_QT:
             self.scope["dialog"] = scripting.QtDialog()
             self.scope["clipboard"] = scripting.QtClipboard(app)
+        elif common.USING_QT5:
+            self.scope["dialog"] = scripting.QtDialog()
+            self.scope["clipboard"] = scripting.QtClipboard(app)
         else:
             self.scope["dialog"] = scripting.GtkDialog()
             self.scope["clipboard"] = scripting.GtkClipboard(app)
@@ -464,7 +469,9 @@ class ScriptRunner:
             if common.USING_QT:
                 self.error = i18n("Script name: '%1'\n%2", script.description, traceback.format_exc())
                 self.app.notify_error(i18n("The script '%1' encountered an error", script.description))
-
+            elif common.USING_QT5:
+                self.error = "Script name: '{0}'\n{1}".format(script.description, traceback.format_exc())
+                self.app.notify_error("The script '{0}' encountered an error".format(script.description))
             else:
                 self.error = _("Script name: '%s'\n%s") % (script.description, traceback.format_exc())
                 self.app.notify_error(_("The script '%s' encountered an error") % script.description)

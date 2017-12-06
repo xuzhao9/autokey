@@ -24,6 +24,9 @@ from autokey import common
 
 if common.USING_QT:
     from PyQt4.QtGui import QClipboard, QApplication
+elif common.USING_QT5:
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtGui import QClipboard
 else:
     import gi
     gi.require_version('Gtk', '3.0')
@@ -111,6 +114,8 @@ class XInterfaceBase(threading.Thread):
 
         if common.USING_QT:
             self.clipBoard = QApplication.clipboard()
+        elif common.USING_QT5:
+            self.clipBoard = QApplication.clipboard()
         else:
             self.clipBoard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             self.selection = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
@@ -126,7 +131,7 @@ class XInterfaceBase(threading.Thread):
         self.__NameAtom = self.localDisplay.intern_atom("_NET_WM_NAME", True)
         self.__VisibleNameAtom = self.localDisplay.intern_atom("_NET_WM_VISIBLE_NAME", True)
         
-        if not common.USING_QT:
+        if not common.USING_QT or common.USING_QT5:
             self.keyMap = Gdk.Keymap.get_default()
             self.keyMap.connect("keys-changed", self.on_keys_changed)
         
@@ -516,6 +521,10 @@ class XInterfaceBase(threading.Thread):
                 self.sem = threading.Semaphore(0)
                 self.app.exec_in_main(self.__fillSelection, string)
                 self.sem.acquire()
+            elif common.USING_QT5:
+                self.sem = threading.Semaphore(0)
+                self.app.exec_in_main(self.__fillSelection, string)
+                self.sem.acquire()
             else:
                 self.__fillSelection(string)
 
@@ -528,6 +537,10 @@ class XInterfaceBase(threading.Thread):
                 self.sem = threading.Semaphore(0)
                 self.app.exec_in_main(self.__fillClipboard, string)
                 self.sem.acquire()
+            elif common.USING_QT5:
+                self.sem = threading.Semaphore(0)
+                self.app.exec_in_main(self.__fillClipboard, string)
+                self.sem.acquire()
             else:
                 self.__fillClipboard(string)
 
@@ -535,12 +548,16 @@ class XInterfaceBase(threading.Thread):
 
             if common.USING_QT:
                 self.app.exec_in_main(self.__restoreClipboard)
+            elif common.USING_QT5:
+                self.app.exec_in_main(self.__restoreClipboard)
 
         logger.debug("Send via clipboard done")
 
     def __restoreClipboard(self):
         if self.__savedClipboard != "":
             if common.USING_QT:
+                self.clipBoard.setText(self.__savedClipboard, QClipboard.Clipboard)
+            elif common.USING_QT5:
                 self.clipBoard.setText(self.__savedClipboard, QClipboard.Clipboard)
             else:
                 Gdk.threads_enter()
@@ -551,6 +568,8 @@ class XInterfaceBase(threading.Thread):
         if common.USING_QT:
             self.clipBoard.setText(string, QClipboard.Selection)
             self.sem.release()
+        elif common.USING_QT5:
+            self.clipBoard.setText(self.__savedClipboard, QClipboard.Clipboard)
         else:
             Gdk.threads_enter()
             self.selection.set_text(string)
@@ -559,6 +578,10 @@ class XInterfaceBase(threading.Thread):
 
     def __fillClipboard(self, string):
         if common.USING_QT:
+            self.__savedClipboard = self.clipBoard.text()
+            self.clipBoard.setText(string, QClipboard.Clipboard)
+            self.sem.release()
+        elif common.USING_QT5:
             self.__savedClipboard = self.clipBoard.text()
             self.clipBoard.setText(string, QClipboard.Clipboard)
             self.sem.release()

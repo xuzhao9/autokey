@@ -19,7 +19,10 @@ if common.USING_QT:
 
         def on_triggered(self):
             self.callback(self.macro)
-
+    
+elif common.USING_QT5:
+    _ = lambda *args: None
+    pass
 else:
     from gi.repository import Gtk
 
@@ -37,7 +40,8 @@ class MacroManager:
         if common.USING_QT:
             for macro in self.macros:
                 menu.addAction(MacroAction(menu, macro, callback))
-        
+        elif common.USING_QT5:
+            pass
         else:
             menu = Gtk.Menu()
 
