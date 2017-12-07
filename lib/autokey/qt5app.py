@@ -18,7 +18,7 @@
 from . import common
 common.USING_QT5 = True
 
-import sys, os, logging, subprocess
+import sys, os, logging, subprocess, time
 import logging.handlers
 
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox

@@ -17,6 +17,7 @@
 
 import logging, sys
 #from PyQt5.QWidgets import QApplication
+from PyQt5.QtCore import pyqtSignal
 
 class PopupMenu:
     pass
