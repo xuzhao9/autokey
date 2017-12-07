@@ -119,7 +119,6 @@ class XInterfaceBase(threading.Thread):
         else:
             self.clipBoard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             self.selection = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
-
         self.__initMappings()
 
         # Set initial lock state
@@ -131,12 +130,11 @@ class XInterfaceBase(threading.Thread):
         self.__NameAtom = self.localDisplay.intern_atom("_NET_WM_NAME", True)
         self.__VisibleNameAtom = self.localDisplay.intern_atom("_NET_WM_VISIBLE_NAME", True)
         
-        if not common.USING_QT or common.USING_QT5:
+        if not (common.USING_QT or common.USING_QT5):
             self.keyMap = Gdk.Keymap.get_default()
             self.keyMap.connect("keys-changed", self.on_keys_changed)
         
         self.__ignoreRemap = False
-        
         self.eventThread.start()
         self.listenerThread.start()
         

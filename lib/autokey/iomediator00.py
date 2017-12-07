@@ -40,14 +40,12 @@ class IoMediator(threading.Thread):
                           Key.CAPSLOCK : False,
                           Key.NUMLOCK : False
                           }
-        
         if self.interfaceType == X_RECORD_INTERFACE:
             self.interface = XRecordInterface(self, service.app)
         elif self.interfaceType == X_EVDEV_INTERFACE:
             self.interface = EvDevInterface(self, service.app)    
         else:
             self.interface = AtSpiInterface(self, service.app)
-
         global CURRENT_INTERFACE
         CURRENT_INTERFACE = self.interface
         
