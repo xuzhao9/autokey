@@ -1,0 +1,102 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'abbrsettings.ui'
+#
+# Created by: PyQt5 UI code generator 5.9
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(571, 350)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.abbrListWidget = QtWidgets.QListWidget(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.abbrListWidget.sizePolicy().hasHeightForWidth())
+        self.abbrListWidget.setSizePolicy(sizePolicy)
+        self.abbrListWidget.setAlternatingRowColors(True)
+        self.abbrListWidget.setUniformItemSizes(True)
+        self.abbrListWidget.setObjectName("abbrListWidget")
+        self.verticalLayout_2.addWidget(self.abbrListWidget)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.addButton = QtWidgets.QPushButton(Form)
+        icon = QtGui.QIcon.fromTheme("list-add")
+        self.addButton.setIcon(icon)
+        self.addButton.setFlat(False)
+        self.addButton.setObjectName("addButton")
+        self.horizontalLayout_2.addWidget(self.addButton)
+        self.removeButton = QtWidgets.QPushButton(Form)
+        self.removeButton.setText("")
+        icon = QtGui.QIcon.fromTheme("list-remove")
+        self.removeButton.setIcon(icon)
+        self.removeButton.setObjectName("removeButton")
+        self.horizontalLayout_2.addWidget(self.removeButton)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3.addLayout(self.verticalLayout_2)
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.triggerOnLabel = QtWidgets.QLabel(Form)
+        self.triggerOnLabel.setObjectName("triggerOnLabel")
+        self.horizontalLayout.addWidget(self.triggerOnLabel)
+        self.wordCharCombo = KComboBox(Form)
+        self.wordCharCombo.setEditable(True)
+        self.wordCharCombo.setObjectName("wordCharCombo")
+        self.horizontalLayout.addWidget(self.wordCharCombo)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.removeTypedCheckbox = QtWidgets.QCheckBox(Form)
+        self.removeTypedCheckbox.setObjectName("removeTypedCheckbox")
+        self.verticalLayout.addWidget(self.removeTypedCheckbox)
+        self.omitTriggerCheckbox = QtWidgets.QCheckBox(Form)
+        self.omitTriggerCheckbox.setObjectName("omitTriggerCheckbox")
+        self.verticalLayout.addWidget(self.omitTriggerCheckbox)
+        self.matchCaseCheckbox = QtWidgets.QCheckBox(Form)
+        self.matchCaseCheckbox.setObjectName("matchCaseCheckbox")
+        self.verticalLayout.addWidget(self.matchCaseCheckbox)
+        self.ignoreCaseCheckbox = QtWidgets.QCheckBox(Form)
+        self.ignoreCaseCheckbox.setObjectName("ignoreCaseCheckbox")
+        self.verticalLayout.addWidget(self.ignoreCaseCheckbox)
+        self.triggerInsideCheckbox = QtWidgets.QCheckBox(Form)
+        self.triggerInsideCheckbox.setObjectName("triggerInsideCheckbox")
+        self.verticalLayout.addWidget(self.triggerInsideCheckbox)
+        self.immediateCheckbox = QtWidgets.QCheckBox(Form)
+        self.immediateCheckbox.setObjectName("immediateCheckbox")
+        self.verticalLayout.addWidget(self.immediateCheckbox)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
+        self.horizontalLayout_3.addLayout(self.verticalLayout)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.kseparator = KSeparator(Form)
+        self.kseparator.setObjectName("kseparator")
+        self.verticalLayout_3.addWidget(self.kseparator)
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.triggerOnLabel.setText(_translate("Form", "Trigger on:"))
+        self.removeTypedCheckbox.setText(_translate("Form", "Remove typed abbreviation"))
+        self.omitTriggerCheckbox.setText(_translate("Form", "Omit trigger character"))
+        self.matchCaseCheckbox.setText(_translate("Form", "Match phrase case to typed abbreviation"))
+        self.ignoreCaseCheckbox.setText(_translate("Form", "Ignore case of typed abbreviation"))
+        self.triggerInsideCheckbox.setText(_translate("Form", "Trigger when typed as part of a word"))
+        self.immediateCheckbox.setText(_translate("Form", "Trigger immediately (don\'t require a trigger character)"))
+
+from kcombobox import KComboBox
+from kseparator import KSeparator

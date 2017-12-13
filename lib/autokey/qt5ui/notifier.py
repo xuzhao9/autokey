@@ -21,8 +21,6 @@ from PyQt5.QtCore import (pyqtSignal, QObject)
 from PyQt5.QtGui import (QIcon)
 from PyQt5.QtWidgets import (QApplication, QSystemTrayIcon, QAction)
 
-
-from .systemtrayicon import AKSystemTrayIcon
 from ..configmanager import *
 
 TOOLTIP_RUNNING = "AutoKey - running"

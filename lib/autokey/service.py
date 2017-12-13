@@ -83,7 +83,6 @@ class Service:
         self.mediator.interface.initialise()
         self.mediator.interface.start()
         self.mediator.start()
-        print("Finished starting!")
         ConfigManager.SETTINGS[SERVICE_RUNNING] = True
         self.scriptRunner = ScriptRunner(self.mediator, self.app)
         self.phraseRunner = PhraseRunner(self)
