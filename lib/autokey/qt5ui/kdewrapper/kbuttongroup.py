@@ -15,12 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging, sys
-#from PyQt5.QWidgets import QApplication
-
-class ConfigWindow:
-    pass
-
-if __name__ == "__main__":
-#    app = QApplication()
-    sys.exit()
+class KButtonGroup:
+    def setObjectName(self, name):
+        pass

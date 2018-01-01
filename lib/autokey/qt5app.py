@@ -24,6 +24,7 @@ import logging.handlers
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 from PyQt5.QtCore import pyqtSignal, Qt, QObject, QEvent
 from PyQt5.QtGui import QCursor
+from dbus.mainloop.pyqt5 import DBusQtMainLoop
 
 from . import service, monitor
 from .qt5ui.notifier import Notifier
@@ -104,7 +105,7 @@ class Application:
         self.configWindow = None
         self.monitor.start()
 
-        dbus.mainloop.pyqt5.DBusQtMainLoop(set_as_default = True)
+        DBusQtMainLoop(set_as_default = True)
         self.dbusService = common.AppService(self)
 
         if ConfigManager.SETTINGS[IS_FIRST_RUN] or configure:
