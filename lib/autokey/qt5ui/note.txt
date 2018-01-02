@@ -1,6 +1,7 @@
 Manually written Python script in this folder:
 configwindow.py // 1497 lines
 dialogs.py // 565 lines
-notifier.py // 117 lines
+notifier.py // 117 lines // finished port
 popupmenu.py // 198 lines // finished port
-settingsdialog.py // 195 lines
+settingsdialog.py // 195 lines  // Partly finished port, TODO: openfiledialog commented out
+// TODO: implement KIcon

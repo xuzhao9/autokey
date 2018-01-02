@@ -17,14 +17,15 @@
 
 import logging, sys
 
-from PyQt5.QtCore import (pyqtSignal, QObject)
-from PyQt5.QtGui import (QIcon)
-from PyQt5.QtWidgets import (QApplication, QSystemTrayIcon, QAction)
+from PyQt5.QtCore import QObject
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QAction
 
 from ..configmanager import *
+from .qt5helper import i18n
 
-TOOLTIP_RUNNING = "AutoKey - running"
-TOOLTIP_PAUSED = "AutoKey - paused"
+TOOLTIP_RUNNING = i18n("AutoKey - running")
+TOOLTIP_PAUSED = i18n("AutoKey - paused")
 
 class Notifier(QObject):
     def __init__(self, app):
