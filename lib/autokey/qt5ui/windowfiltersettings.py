@@ -19,7 +19,7 @@ class Ui_Form(object):
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout.addWidget(self.label_2)
-        self.triggerRegexLineEdit = KLineEdit(Form)
+        self.triggerRegexLineEdit = QtWidgets.QLineEdit(Form)
         self.triggerRegexLineEdit.setUrlDropsEnabled(False)
         self.triggerRegexLineEdit.setProperty("showClearButton", True)
         self.triggerRegexLineEdit.setObjectName("triggerRegexLineEdit")
@@ -36,7 +36,7 @@ class Ui_Form(object):
         self.detectButton.setObjectName("detectButton")
         self.horizontalLayout_2.addWidget(self.detectButton)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.kseparator = KSeparator(Form)
+        self.kseparator = QtWidgets.QFrame(Form)
         self.kseparator.setObjectName("kseparator")
         self.verticalLayout.addWidget(self.kseparator)
 
@@ -52,5 +52,3 @@ class Ui_Form(object):
         self.recursiveCheckBox.setText(_translate("Form", "Apply recursively to subfolders and items"))
         self.detectButton.setText(_translate("Form", "Detect Window Properties"))
 
-from klineedit import KLineEdit
-from kseparator import KSeparator

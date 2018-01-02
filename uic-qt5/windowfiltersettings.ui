@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="KLineEdit" name="triggerRegexLineEdit">
+      <widget class="QLineEdit" name="triggerRegexLineEdit">
        <property name="toolTip">
         <string>Window title</string>
        </property>
@@ -73,22 +73,10 @@
     </layout>
    </item>
    <item>
-    <widget class="KSeparator" name="kseparator"/>
+    <widget class="QFrame" name="kseparator"/>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KSeparator</class>
-   <extends>QFrame</extends>
-   <header>kseparator.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

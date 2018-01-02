@@ -51,7 +51,7 @@ class Ui_Form(object):
         self.triggerOnLabel = QtWidgets.QLabel(Form)
         self.triggerOnLabel.setObjectName("triggerOnLabel")
         self.horizontalLayout.addWidget(self.triggerOnLabel)
-        self.wordCharCombo = KComboBox(Form)
+        self.wordCharCombo = QtWidgets.QComboBox(Form)
         self.wordCharCombo.setEditable(True)
         self.wordCharCombo.setObjectName("wordCharCombo")
         self.horizontalLayout.addWidget(self.wordCharCombo)
@@ -80,7 +80,7 @@ class Ui_Form(object):
         self.verticalLayout.addItem(spacerItem1)
         self.horizontalLayout_3.addLayout(self.verticalLayout)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
-        self.kseparator = KSeparator(Form)
+        self.kseparator = QtWidgets.QFrame(Form)
         self.kseparator.setObjectName("kseparator")
         self.verticalLayout_3.addWidget(self.kseparator)
 
@@ -98,5 +98,3 @@ class Ui_Form(object):
         self.triggerInsideCheckbox.setText(_translate("Form", "Trigger when typed as part of a word"))
         self.immediateCheckbox.setText(_translate("Form", "Trigger immediately (don\'t require a trigger character)"))
 
-from kcombobox import KComboBox
-from kseparator import KSeparator

@@ -14,7 +14,7 @@ class Ui_ScriptPage(object):
         ScriptPage.resize(587, 581)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(ScriptPage)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.urlLabel = KUrlLabel(ScriptPage)
+        self.urlLabel = QtWidgets.QLabel(ScriptPage)
         self.urlLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.urlLabel.setObjectName("urlLabel")
         self.verticalLayout_2.addWidget(self.urlLabel)
@@ -33,7 +33,7 @@ class Ui_ScriptPage(object):
         self.showInTrayCheckbox = QtWidgets.QCheckBox(self.settingsGroupbox)
         self.showInTrayCheckbox.setObjectName("showInTrayCheckbox")
         self.verticalLayout.addWidget(self.showInTrayCheckbox)
-        self.kseparator = KSeparator(self.settingsGroupbox)
+        self.kseparator = QtWidgets.QFrame(self.settingsGroupbox)
         self.kseparator.setObjectName("kseparator")
         self.verticalLayout.addWidget(self.kseparator)
         self.settingsWidget = SettingsWidget(self.settingsGroupbox)
@@ -54,5 +54,3 @@ class Ui_ScriptPage(object):
 
 from PyQt5 import Qsci
 from configwindow import SettingsWidget
-from kseparator import KSeparator
-from kurllabel import KUrlLabel

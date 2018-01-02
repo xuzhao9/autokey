@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 # Copyright (C) 2017 Xu Zhao
 #
@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class KButtonGroup:
-    def setObjectName(self, name):
+def i18n(*args):
+    r = str()
+    for element in args:
+        r = r + str(element)
+    return r
+
+
+class KIcon(QIcon):
+    def __init__(self, name):
+        self.icon_name = name
         pass

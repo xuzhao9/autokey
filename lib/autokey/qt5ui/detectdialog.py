@@ -26,7 +26,7 @@ class Ui_Form(object):
         self.classLabel.setObjectName("classLabel")
         self.verticalLayout_2.addWidget(self.classLabel)
         self.verticalLayout.addWidget(self.groupBox)
-        self.kbuttongroup = KButtonGroup(Form)
+        self.kbuttongroup = QtWidgets.QGroupBox(Form)
         self.kbuttongroup.setObjectName("kbuttongroup")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.kbuttongroup)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -51,4 +51,3 @@ class Ui_Form(object):
         self.classButton.setText(_translate("Form", "Window class (entire application)"))
         self.titleButton.setText(_translate("Form", "Window title"))
 
-from kbuttongroup import KButtonGroup

@@ -28,7 +28,7 @@ class Ui_Form(object):
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout.addWidget(self.label_2)
-        self.secondsSpinBox = KIntSpinBox(Form)
+        self.secondsSpinBox = QtWidgets.QSpinBox(Form)
         self.secondsSpinBox.setProperty("value", 5)
         self.secondsSpinBox.setObjectName("secondsSpinBox")
         self.horizontalLayout.addWidget(self.secondsSpinBox)
@@ -49,4 +49,3 @@ class Ui_Form(object):
         self.label_2.setText(_translate("Form", "Start recording after"))
         self.label_3.setText(_translate("Form", "seconds"))
 
-from knuminput import KIntSpinBox

@@ -14,7 +14,7 @@ class Ui_FolderPage(object):
         FolderPage.resize(568, 530)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(FolderPage)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.urlLabel = KUrlLabel(FolderPage)
+        self.urlLabel = QtWidgets.QLabel(FolderPage)
         self.urlLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.urlLabel.setObjectName("urlLabel")
         self.verticalLayout_2.addWidget(self.urlLabel)
@@ -25,7 +25,7 @@ class Ui_FolderPage(object):
         self.showInTrayCheckbox = QtWidgets.QCheckBox(self.settingsGroupBox)
         self.showInTrayCheckbox.setObjectName("showInTrayCheckbox")
         self.verticalLayout.addWidget(self.showInTrayCheckbox)
-        self.kseparator = KSeparator(self.settingsGroupBox)
+        self.kseparator = QtWidgets.QFrame(self.settingsGroupBox)
         self.kseparator.setObjectName("kseparator")
         self.verticalLayout.addWidget(self.kseparator)
         self.settingsWidget = SettingsWidget(self.settingsGroupBox)
@@ -46,5 +46,3 @@ class Ui_FolderPage(object):
         self.showInTrayCheckbox.setText(_translate("FolderPage", "Show in notification icon menu"))
 
 from configwindow import SettingsWidget
-from kseparator import KSeparator
-from kurllabel import KUrlLabel

@@ -14,11 +14,11 @@ class Ui_PhrasePage(object):
         PhrasePage.resize(540, 421)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(PhrasePage)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.urlLabel = KUrlLabel(PhrasePage)
+        self.urlLabel = QtWidgets.QLabel(PhrasePage)
         self.urlLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.urlLabel.setObjectName("urlLabel")
         self.verticalLayout_2.addWidget(self.urlLabel)
-        self.phraseText = KTextEdit(PhrasePage)
+        self.phraseText = QtWidgets.QTextEdit(PhrasePage)
         self.phraseText.setTabChangesFocus(True)
         self.phraseText.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.phraseText.setAcceptRichText(False)
@@ -45,7 +45,7 @@ class Ui_PhrasePage(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.kseparator = KSeparator(self.settingsGroupBox)
+        self.kseparator = QtWidgets.QFrame(self.settingsGroupBox)
         self.kseparator.setObjectName("kseparator")
         self.verticalLayout.addWidget(self.kseparator)
         self.settingsWidget = SettingsWidget(self.settingsGroupBox)
@@ -66,6 +66,3 @@ class Ui_PhrasePage(object):
         self.label.setText(_translate("PhrasePage", "Paste using"))
 
 from configwindow import SettingsWidget
-from kseparator import KSeparator
-from ktextedit import KTextEdit
-from kurllabel import KUrlLabel
