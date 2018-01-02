@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from PyQt5.QtGui import QIcon
+
 def i18n(*args):
     r = str()
     for element in args:
@@ -22,7 +24,8 @@ def i18n(*args):
     return r
 
 
+# Load the icon from the name
 class KIcon(QIcon):
     def __init__(self, name):
+        print("Loading icon:" + name)
         self.icon_name = name
-        pass

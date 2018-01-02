@@ -18,10 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging, sys, os, re
-from PyKDE4.kdeui import *
-from PyKDE4.kdecore import i18n
-from PyQt4.QtGui import *
-from PyQt4.QtCore import SIGNAL, Qt, QRegExp
+from .qt5helper import i18n
+from PyQt5.QtWidgets import QDialog, QListWidgetItem, QWidget
 
 __all__ = ["validate", "EMPTY_FIELD_REGEX", "AbbrSettingsDialog", "HotkeySettingsDialog", "WindowFilterSettingsDialog", "RecordDialog"]
 
@@ -66,8 +64,8 @@ class AbbrSettings(QWidget, abbrsettings.Ui_Form):
         for item in WORD_CHAR_OPTIONS_ORDERED:
             self.wordCharCombo.addItem(item)
 
-        self.addButton.setIcon(KIcon("list-add"))
-        self.removeButton.setIcon(KIcon("list-remove"))
+        self.addButton.setIcon(QIcon("list-add"))
+        self.removeButton.setIcon(QIcon("list-remove"))
 
     def on_addButton_pressed(self):
         item = AbbrListItem("")
@@ -110,14 +108,14 @@ class AbbrSettings(QWidget, abbrsettings.Ui_Form):
             self.wordCharCombo.setEnabled(True)
 
 
-class AbbrSettingsDialog(KDialog):
+class AbbrSettingsDialog(QDialog):
 
     def __init__(self, parent):
-        KDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.widget = AbbrSettings(self)
         self.setMainWidget(self.widget)
-        self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
-        self.setPlainCaption(i18n("Set Abbreviations"))
+        # self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # self.setPlainCaption(i18n("Set Abbreviations"))
         self.setModal(True)
         #self.connect(self, SIGNAL("okClicked()"), self.on_okClicked)
         
@@ -230,12 +228,13 @@ class AbbrSettingsDialog(KDialog):
         return True
         
     def slotButtonClicked(self, button):
-        if button == KDialog.Ok:
-            if self.__valid():
-                KDialog.slotButtonClicked(self, button)
-        else:
-            self.load(self.targetItem)
-            KDialog.slotButtonClicked(self, button)
+        pass
+        #if button == KDialog.Ok:
+        #    if self.__valid():
+        #        KDialog.slotButtonClicked(self, button)
+        #else:
+        #    self.load(self.targetItem)
+        #    KDialog.slotButtonClicked(self, button)
 
 
 class HotkeySettings(QWidget, hotkeysettings.Ui_Form):
@@ -253,7 +252,7 @@ class HotkeySettings(QWidget, hotkeysettings.Ui_Form):
         self.grabber = iomediator.KeyGrabber(self.parentWidget())
         self.grabber.start()  
 
-class HotkeySettingsDialog(KDialog):
+class HotkeySettingsDialog(QDialog):
     
     KEY_MAP = {
                ' ' : "<space>",
@@ -264,10 +263,10 @@ class HotkeySettingsDialog(KDialog):
         REVERSE_KEY_MAP[value] = key
 
     def __init__(self, parent):
-        KDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.widget = HotkeySettings(self)
         self.setMainWidget(self.widget)
-        self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
         self.setPlainCaption(i18n("Set Hotkey"))
         self.setModal(True)
         self.key = None
@@ -359,12 +358,15 @@ class HotkeySettingsDialog(KDialog):
         
                 
     def slotButtonClicked(self, button):
-        if button == KDialog.Ok:
-            if self.__valid():
-                KDialog.slotButtonClicked(self, button)
-        else:
-            self.load(self.targetItem)
-            KDialog.slotButtonClicked(self, button)
+        pass
+        # if button == KDialog.Ok:
+        #     if self.__valid():
+        #         pass
+        #         # KDialog.slotButtonClicked(self, button)
+        # else:
+        #     self.load(self.targetItem)
+        #     pass
+            # KDialog.slotButtonClicked(self, button)
             
     def _setKeyLabel(self, key):
         self.widget.keyLabel.setText(i18n("Key: ") + key)
@@ -426,19 +428,20 @@ class WindowFilterSettings(QWidget, windowfiltersettings.Ui_Form):
     # ---- Signal handlers
 
     def on_detectButton_pressed(self):
-        self.detectButton.setEnabled(False)
-        self.grabber = iomediator.WindowGrabber(self.parentWidget())
-        self.grabber.start()
+        pass
+        # self.detectButton.setEnabled(False)
+        # self.grabber = iomediator.WindowGrabber(self.parentWidget())
+        # self.grabber.start()
 
 
-class WindowFilterSettingsDialog(KDialog):
+class WindowFilterSettingsDialog(QDialog):
 
     def __init__(self, parent):
-        KDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.widget = WindowFilterSettings(self)
         self.setMainWidget(self.widget)
-        self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
-        self.setPlainCaption(i18n("Set Window Filter"))
+        # self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # self.setPlainCaption(i18n("Set Window Filter"))
         self.setModal(True)
         
     def load(self, item):
@@ -488,10 +491,11 @@ class WindowFilterSettingsDialog(KDialog):
     # --- event handlers ---
 
     def slotButtonClicked(self, button):
-        if button == KDialog.Cancel:
-            self.load(self.targetItem)
+        pass
+        # if button == KDialog.Cancel:
+            # self.load(self.targetItem)
             
-        KDialog.slotButtonClicked(self, button)
+        # QDialog.slotButtonClicked(self, button)
         
 
 
@@ -503,13 +507,15 @@ class DetectSettings(QWidget, detectdialog.Ui_Form):
         self.setupUi(self)
         self.kbuttongroup.setSelected(0)
 
-class DetectDialog(KDialog):
+class DetectDialog(QDialog):
 
     def __init__(self, parent):
-        KDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.widget = DetectSettings(self)
         self.setMainWidget(self.widget)
-        self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # self.accept.connect(slotOKClicked)
+        # self.reject.connect(slotCancelClicked)
         self.setPlainCaption(i18n("Window Information"))
         self.setModal(True)
 
@@ -534,13 +540,16 @@ class RecordSettings(QWidget, recorddialog.Ui_Form):
         recorddialog.Ui_Form.__init__(self)
         self.setupUi(self)
         
-class RecordDialog(KDialog):
+class RecordDialog(QDialog):
 
     def __init__(self, parent, closure):
-        KDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.widget = RecordSettings(self)
         self.setMainWidget(self.widget)
-        self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
+        # connect to OK and Cancel
+        self.accept.connect(slotOKClicked)
+        self.reject.connect(slotCancelClicked)
+        # self.setButtons(KDialog.ButtonCodes(KDialog.ButtonCode(KDialog.Ok | KDialog.Cancel)))
         self.setPlainCaption(i18n("Record Script"))
         self.setModal(True)
         self.closure = closure
@@ -553,12 +562,19 @@ class RecordDialog(KDialog):
 
     def get_delay(self):
         return self.widget.secondsSpinBox.value()
+
+    def slotOKClicked():
+        self.closure(True, self.get_record_keyboard(), self.get_record_mouse(), self.get_delay())
+        pass
+
+    def slotCancelClicked():
+        pass
         
-    def slotButtonClicked(self, button):
-        if button == KDialog.Ok:
-            KDialog.slotButtonClicked(self, button)
-            self.closure(True, self.get_record_keyboard(), self.get_record_mouse(), self.get_delay())
-        else:
-            self.closure(False, self.get_record_keyboard(), self.get_record_mouse(), self.get_delay())
-            KDialog.slotButtonClicked(self, button)
+    # def slotButtonClicked(self, button):
+    #     if button == QDialog.Ok:
+    #         QDialog.slotButtonClicked(self, button)
+    #         self.closure(True, self.get_record_keyboard(), self.get_record_mouse(), self.get_delay())
+    #     else:
+    #         self.closure(False, self.get_record_keyboard(), self.get_record_mouse(), self.get_delay())
+    #         QDialog.slotButtonClicked(self, button)
 

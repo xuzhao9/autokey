@@ -65,4 +65,4 @@ class Ui_PhrasePage(object):
         self.showInTrayCheckbox.setText(_translate("PhrasePage", "Show in notification icon menu"))
         self.label.setText(_translate("PhrasePage", "Paste using"))
 
-from configwindow import SettingsWidget
+from .configwindow import SettingsWidget

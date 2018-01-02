@@ -53,4 +53,4 @@ class Ui_ScriptPage(object):
         self.showInTrayCheckbox.setText(_translate("ScriptPage", "Show in notification icon menu"))
 
 from PyQt5 import Qsci
-from configwindow import SettingsWidget
+from .configwindow import SettingsWidget

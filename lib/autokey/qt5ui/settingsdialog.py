@@ -20,7 +20,9 @@ import sys
 from ..configmanager import *
 from .. import iomediator, interface, model
 from .dialogs import GlobalHotkeyDialog
-from qt5helper import i18n, KIcon
+from .qt5helper import i18n, KIcon
+
+from PyQt5.QtWidgets import QWidget, QDialog
 
 from . import generalsettings, specialhotkeysettings, enginesettings
 
@@ -162,20 +164,20 @@ class EngineSettings(QWidget, enginesettings.Ui_Form):
         pass
         
 
-class SettingsDialog(KPageDialog):
+class SettingsDialog(QDialog):
     
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.app = parent.topLevelWidget().app # Used by GlobalHotkeyDialog
         
         self.genPage = self.addPage(GeneralSettings(self), i18n("General"))
-        self.genPage.setIcon(KIcon("preferences-other"))
+        self.genPage.setIcon(QIcon("preferences-other"))
         
         self.hkPage = self.addPage(SpecialHotkeySettings(self, parent.app.configManager), i18n("Special Hotkeys"))
-        self.hkPage.setIcon(KIcon("preferences-desktop-keyboard"))
+        self.hkPage.setIcon(QIcon("preferences-desktop-keyboard"))
         
         self.ePage = self.addPage(EngineSettings(self, parent.app.configManager), i18n("Script Engine"))
-        self.ePage.setIcon(KIcon("text-x-script"))
+        self.ePage.setIcon(QIcon("text-x-script"))
         
         self.setCaption(i18n("Settings"))
         

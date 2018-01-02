@@ -1,7 +1,8 @@
 Manually written Python script in this folder:
-configwindow.py // 1497 lines
+configwindow.py // 1497 lines // Parted finished, need to use QDialog to replace KDialog and get rid of "pass"es
 dialogs.py // 565 lines
 notifier.py // 117 lines // finished port
 popupmenu.py // 198 lines // finished port
 settingsdialog.py // 195 lines  // Partly finished port, TODO: openfiledialog commented out
 // TODO: implement KIcon
+// TODO: KDialog

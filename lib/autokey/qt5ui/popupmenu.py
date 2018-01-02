@@ -20,7 +20,7 @@ import logging, sys
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication, QMenu, QWidgetAction
 
-from qt5helper import i18n
+from .qt5helper import i18n
 from ..configmanager import *
 
 _logger = logging.getLogger("phrase-menu")

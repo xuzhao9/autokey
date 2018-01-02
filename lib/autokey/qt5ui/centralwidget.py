@@ -80,4 +80,4 @@ class Ui_CentralWidget(object):
         self.treeWidget.headerItem().setText(1, _translate("CentralWidget", "Abbr."))
         self.treeWidget.headerItem().setText(2, _translate("CentralWidget", "Hotkey"))
 
-from configwindow import AkTreeWidget, FolderPage, PhrasePage, ScriptPage
+from .configwindow import AkTreeWidget, FolderPage, PhrasePage, ScriptPage

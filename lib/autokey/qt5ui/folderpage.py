@@ -45,4 +45,4 @@ class Ui_FolderPage(object):
         self.settingsGroupBox.setTitle(_translate("FolderPage", "Folder Settings"))
         self.showInTrayCheckbox.setText(_translate("FolderPage", "Show in notification icon menu"))
 
-from configwindow import SettingsWidget
+from .configwindow import SettingsWidget
