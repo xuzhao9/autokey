@@ -20,7 +20,7 @@ class Ui_Form(object):
         self.label_2.setObjectName("label_2")
         self.horizontalLayout.addWidget(self.label_2)
         self.triggerRegexLineEdit = QtWidgets.QLineEdit(Form)
-        self.triggerRegexLineEdit.setUrlDropsEnabled(False)
+        # self.triggerRegexLineEdit.setUrlDropsEnabled(False)
         self.triggerRegexLineEdit.setProperty("showClearButton", True)
         self.triggerRegexLineEdit.setObjectName("triggerRegexLineEdit")
         self.horizontalLayout.addWidget(self.triggerRegexLineEdit)

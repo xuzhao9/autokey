@@ -17,8 +17,9 @@
 
 import logging, sys, os, webbrowser, subprocess, time
 from .qt5helper import i18n
-from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem
+from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu
+from PyQt5 import Qsci
+from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QListWidgetItem, QListWidget
 from .. import common
 
 #CONFIG_WINDOW_TITLE = i18n(common.CONFIG_WINDOW_TITLE)
@@ -263,7 +264,7 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         self.scriptCodeEditor.setAutoCompletionThreshold(3)
         self.scriptCodeEditor.setAutoCompletionSource(Qsci.QsciScintilla.AcsAll)
         self.scriptCodeEditor.setCallTipsStyle(Qsci.QsciScintilla.CallTipsNoContext)
-        lex.setFont(KGlobalSettings.fixedFont())
+        # lex.setFont(KGlobalSettings.fixedFont())
         
     def load(self, script):
         self.currentScript = script
@@ -612,7 +613,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
         [self.treeWidget.setColumnWidth(x, ConfigManager.SETTINGS[COLUMN_WIDTHS][x]) for x in range(3)]
         hView = self.treeWidget.header()
-        hView.setResizeMode(QHeaderView.ResizeMode(QHeaderView.Interactive|QHeaderView.ResizeToContents))
+        # hView.setResizeMode(QHeaderView.ResizeMode(QHeaderView.Interactive|QHeaderView.ResizeToContents))
 
         self.logHandler = ListWidgetHandler(self.listWidget, app)
         self.listWidget.hide()
@@ -712,7 +713,8 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
             self.__createFolder(None)
 
         elif result != KMessageBox.Cancel:
-            path = KFileDialog.getExistingDirectory(KUrl(), self.topLevelWidget())
+            # path = KFileDialog.getExistingDirectory(KUrl(), self.topLevelWidget())
+            path = ""
 
             if path != "":
                 path = str(path)
@@ -922,8 +924,9 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.parentWidget().cancel_record()
 
     def on_save_log(self):
-        fileName = KFileDialog.getSaveFileName(KUrl(), "", self.parentWidget(),
-                    "Save log file")
+        #fileName = KFileDialog.getSaveFileName(KUrl(), "", self.parentWidget(),
+        #            "Save log file")
+        fileName = ""
 
         if fileName != "":
             try:

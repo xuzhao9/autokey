@@ -46,7 +46,6 @@ class MenuBase:
             items.sort(key=lambda obj: str(obj))      
         
         if len(folders) == 1 and len(items) == 0 and onDesktop:
-            print(":here")
             # Only one folder - create menu with just its folders and items
             self.addTitle(folders[0].title)
             for folder in folders[0].folders:
@@ -68,7 +67,6 @@ class MenuBase:
                 self.addSeparator()
     
             self._addItemsToSelf(items, onDesktop)
-        print("done with popupmenu")
         
     def _addItem(self, description, item):
         action = ItemAction(self, self._getMnemonic(description), item, self.service.item_selected)

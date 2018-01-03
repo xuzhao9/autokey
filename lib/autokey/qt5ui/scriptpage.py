@@ -47,7 +47,7 @@ class Ui_ScriptPage(object):
     def retranslateUi(self, ScriptPage):
         _translate = QtCore.QCoreApplication.translate
         ScriptPage.setWindowTitle(_translate("ScriptPage", "Form"))
-        self.urlLabel.setTipText(_translate("ScriptPage", "Open the script in the default text editor"))
+        # self.urlLabel.setTipText(_translate("ScriptPage", "Open the script in the default text editor"))
         self.settingsGroupbox.setTitle(_translate("ScriptPage", "Script Settings"))
         self.promptCheckbox.setText(_translate("ScriptPage", "Always prompt before running this script"))
         self.showInTrayCheckbox.setText(_translate("ScriptPage", "Show in notification icon menu"))

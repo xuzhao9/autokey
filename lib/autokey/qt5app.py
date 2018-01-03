@@ -76,14 +76,38 @@ class Application:
             logging.exception("Fatal error starting AutoKey Qt5 App: " + str(e))
             sys.exit(1)
 
+    def __createLockFile(self):
+        f = open(LOCK_FILE, 'w')
+        f.write(str(os.getpid()))
+        f.close()
+        
+    def __verifyNotRunning(self):
+        if os.path.exists(LOCK_FILE):
+            f = open(LOCK_FILE, 'r')
+            pid = f.read()
+            f.close()
             
+            # Check that the found PID is running and is autokey
+            with subprocess.Popen(["ps", "-p", pid, "-o", "command"], stdout=subprocess.PIPE) as p:
+                output = p.communicate()[0].decode()
+                
+            if "autokey" in output:
+                logging.debug("AutoKey is already running as pid %s", pid)
+                bus = dbus.SessionBus()
+                try:
+                    dbusService = bus.get_object("org.autokey.Service", "/AppService")
+                    dbusService.show_configure(dbus_interface = "org.autokey.Service")
+                    sys.exit(0)
+                except dbus.DBusException as e:
+                    logging.exception("Error communicating with Dbus service")
+                    self.show_error_dialog("AutoKey start failed: AutoKey is already running as pid {0}, but is not responding.\nLock file location: {1} ".format(pid, LOCK_FILE), str(e))
+                    sys.exit(1)
+         
+        return True
+
     def main(self):
-        w = QWidget()
-        w.resize(250, 150)
-        w.move(300, 300)
-        w.setWindowTitle('Simple')
-        w.show()
-        sys.exit(self.app.exec_())
+        self.app.exec_()
+        
 
     def initialise(self, configure = None):
         logging.info("Initialising application.")
@@ -104,9 +128,7 @@ class Application:
             self.show_error_dialog("Error starting interface. Keyboard monitoring will be disabled.\n" +
                                    "Check your system/configuration.", str(e))
 
-        print("step 1")
         self.notifier = Notifier(self)
-        print("here!!")
         self.configWindow = None
         self.monitor.start()
 
@@ -124,23 +146,11 @@ class Application:
         logging.info("Initialise global hotkeys")
         configManager.toggleServiceHotkey.set_closure(self.toggle_service)
         configManager.configHotkey.set_closure(self.show_configure_async)
-        
-    def show_configure_async(self):
-        self.exec_in_main(self.show_configure)
 
-    def show_configure(self):
-        """
-        Show the configuration window, or deiconify (un-minimise) it if it's already open.
-        """
-        logging.info("Displaying configuration window")
-        try:
-            print("showing config!")
-            self.configWindow.showNormal()
-            self.configWindow.activateWindow()
-        except (AttributeError, RuntimeError):
-            # AttributeError when the main window is shown the first time, RuntimeError subsequently.
-            self.configWindow = ConfigWindow(self)
-            self.configWindow.show()
+    def config_altered(self, persistGlobal):
+        self.configManager.config_altered(persistGlobal)
+        self.notifier.build_menu()
+
     
     def hotkey_created(self, item):
         logging.debug("Created hotkey: %r, %s", item.modifiers, item.hotKey)
@@ -184,13 +194,7 @@ class Application:
             self.pause_service()
         else:
             self.unpause_service()
-            
-    def show_error_dialog(self, message, details=None):
-        """
-        Convenience method for showing an error dialog.
-        """
-        QMessageBox.warning(None, "Error", message)
-
+    
     def shutdown(self):
         """
         Shut down the entire application.
@@ -204,35 +208,66 @@ class Application:
         os.remove(LOCK_FILE)
         logging.debug("All shutdown tasks complete... quitting")
 
-
-    def __createLockFile(self):
-        f = open(LOCK_FILE, 'w')
-        f.write(str(os.getpid()))
-        f.close()
+    def notify_error(self, message):
+        """
+        Show an error notification popup.
         
-    def __verifyNotRunning(self):
-        if os.path.exists(LOCK_FILE):
-            f = open(LOCK_FILE, 'r')
-            pid = f.read()
-            f.close()
-            
-            # Check that the found PID is running and is autokey
-            with subprocess.Popen(["ps", "-p", pid, "-o", "command"], stdout=subprocess.PIPE) as p:
-                output = p.communicate()[0].decode()
-                
-            if "autokey" in output:
-                logging.debug("AutoKey is already running as pid %s", pid)
-                bus = dbus.SessionBus()
-                try:
-                    dbusService = bus.get_object("org.autokey.Service", "/AppService")
-                    dbusService.show_configure(dbus_interface = "org.autokey.Service")
-                    sys.exit(0)
-                except dbus.DBusException as e:
-                    logging.exception("Error communicating with Dbus service")
-                    self.show_error_dialog("AutoKey start failed: AutoKey is already running as pid {0}, but is not responding.\nLock file location: {1} ".format(pid, LOCK_FILE), str(e))
-                    sys.exit(1)
-         
-        return True
+        @param message: Message to show in the popup
+        """
+        self.exec_in_main(self.notifier.notify_error, message)
+
+
+    def update_notifier_visibility(self):
+        self.notifier.update_visible_status()
+    
+
+    def show_configure(self):
+        """
+        Show the configuration window, or deiconify (un-minimise) it if it's already open.
+        """
+        logging.info("Displaying configuration window")
+        try:
+            self.configWindow.showNormal()
+            self.configWindow.activateWindow()
+        except (AttributeError, RuntimeError):
+            # AttributeError when the main window is shown the first time, RuntimeError subsequently.
+            self.configWindow = ConfigWindow(self)
+            self.configWindow.show()
+    
+    def show_configure_async(self):
+        self.exec_in_main(self.show_configure)
+
+    def show_error_dialog(self, message, details=None):
+        """
+        Convenience method for showing an error dialog.
+        """
+        QMessageBox.warning(None, "Error", message)
+
+    def show_script_error(self):
+        """
+        Show the last script error (if any)
+        """
+        if self.service.scriptRunner.error != '':
+            #KMessageBox.information(None, self.service.scriptRunner.error, i18n("View Script Error Details"))
+            self.service.scriptRunner.error = ''
+        else:
+            #KMessageBox.information(None, i18n("No error information available"), i18n("View Script Error Details"))
+            pass
+
+    def show_popup_menu(self, folders=[], items=[], onDesktop=True, title=None):
+        self.exec_in_main(self.__createMenu, folders, items, onDesktop, title)
+        
+    def hide_menu(self):
+        self.exec_in_main(self.menu.hide)
+        
+    def __createMenu(self, folders, items, onDesktop, title):
+        self.menu = PopupMenu(self.service, folders, items, onDesktop, title)
+        self.menu.popup(QCursor.pos())
+        self.menu.setFocus()
+        
+    def exec_in_main(self, callback, *args):
+        self.handler.postEventWithCallback(callback, *args)
+
 
 class CallbackEventHandler(QObject):
     def __init__(self):

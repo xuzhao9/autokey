@@ -41,7 +41,7 @@ class Ui_FolderPage(object):
     def retranslateUi(self, FolderPage):
         _translate = QtCore.QCoreApplication.translate
         FolderPage.setWindowTitle(_translate("FolderPage", "Form"))
-        self.urlLabel.setTipText(_translate("FolderPage", "Open the folder in the default file manager"))
+        # self.urlLabel.setTipText(_translate("FolderPage", "Open the folder in the default file manager"))
         self.settingsGroupBox.setTitle(_translate("FolderPage", "Folder Settings"))
         self.showInTrayCheckbox.setText(_translate("FolderPage", "Show in notification icon menu"))
 

@@ -17,8 +17,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging, sys, os, re
-from .qt5helper import i18n, AKMessageBox, AKDialog, AKPageDialog
-from PyQt5.QtWidgets import QListWidgetItem, QWidget
+from .qt5helper import i18n, AKMessageBox, AKDialog, AKPageDialog, AKIcon
+from PyQt5.QtWidgets import QListWidgetItem, QWidget, QApplication
+from PyQt5.QtGui import QFontMetrics
 
 __all__ = ["validate", "EMPTY_FIELD_REGEX", "AbbrSettingsDialog", "HotkeySettingsDialog", "WindowFilterSettingsDialog", "RecordDialog"]
 

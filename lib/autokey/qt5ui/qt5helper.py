@@ -18,8 +18,10 @@
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
-from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QToolButton, QMainWindow
 from PyQt5 import QtCore, Qt
+
+from enum import Enum
 
 def i18n(*args):
     r = str()
@@ -35,9 +37,20 @@ class AKStandardShortcut:
     def __init__(self):
         pass
 
-class AKXmlGuiWindow:
+class AKActionCollection(QObject):
     def __init__(self):
+        QObject.__init__(self)
+    def addAction(self, name, action):
+        objectName = action.objectName()
         pass
+    
+class AKXmlGuiWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.actions = AKActionCollection()
+        pass
+    def actionCollection(self):
+        return self.actions
 
 class AKMessageBox:
     def __init__(self):
@@ -108,7 +121,6 @@ class AKStandardAction:
     
 class AKSystemTrayIcon(QSystemTrayIcon):
     def __init__(self, name):
-        print("tray!")
         QSystemTrayIcon.__init__(self)
         self.icon = AKIcon(name)
 
@@ -124,9 +136,24 @@ class AKPageDialog(QDialog):
         pass
         
 class AKDialog(QDialog):
+
+    Ok = 0x00000004
+    Cancel = 0x00000020
+
+    class ButtonCodes:
+        def __init__(self, value):
+            self.value = value
+    
+    class ButtonCode:
+        def __init__(self, value):
+            self.value = value
+    
     def __init__(self, parent):
         QDialog.__init__(self, parent)
 
+    def setButtons(self, buttonCode):
+        pass
+    
     def setMainWidget(self, widget):
         self.mainWidget = widget
         

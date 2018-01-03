@@ -59,7 +59,7 @@ class Ui_PhrasePage(object):
     def retranslateUi(self, PhrasePage):
         _translate = QtCore.QCoreApplication.translate
         PhrasePage.setWindowTitle(_translate("PhrasePage", "Form"))
-        self.urlLabel.setTipText(_translate("PhrasePage", "Open the phrase in the default text editor"))
+        # self.urlLabel.setTipText(_translate("PhrasePage", "Open the phrase in the default text editor"))
         self.settingsGroupBox.setTitle(_translate("PhrasePage", "Phrase Settings"))
         self.promptCheckbox.setText(_translate("PhrasePage", "Always prompt before pasting this phrase"))
         self.showInTrayCheckbox.setText(_translate("PhrasePage", "Show in notification icon menu"))

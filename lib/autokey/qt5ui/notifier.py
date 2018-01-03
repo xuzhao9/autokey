@@ -41,9 +41,7 @@ class Notifier:
         # self.icon.connect(self.icon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.on_activate)
         self.icon.activated.connect(self.on_activate)
         self.build_menu()
-        print("ok1.4!")
         self.update_tool_tip()
-        print("ok2!")
 
         if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
             self.icon.show()
@@ -74,7 +72,6 @@ class Notifier:
             menu = popupmenu.PopupMenu(self.app.service, folders, items, False, "AutoKey")
             if len(items) > 0:
                 menu.addSeparator()
-            print("after popupmenu!")
             self.toggleAction = AKToggleAction(i18n("&Enable Monitoring"), menu)
             # self.toggleAction.connect(self.toggleAction, SIGNAL("triggered()"), self.on_enable_toggled)
             self.toggleAction.triggered.connect(self.on_enable_toggled)
