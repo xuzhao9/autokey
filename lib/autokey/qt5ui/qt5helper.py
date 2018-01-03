@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon
 
 def i18n(*args):
     r = str()
@@ -23,9 +25,77 @@ def i18n(*args):
         r = r + str(element)
     return r
 
+class AKAboutApplicationDialog:
+    def __init__(self, aboutData, window):
+        pass
+
+class AKStandardShortcut:
+    def __init__(self):
+        pass
+
+class AKXmlGuiWindow:
+    def __init__(self):
+        pass
+
+class AKMessageBox:
+    def __init__(self):
+        pass
+
+class AKAutostart:
+    def __init__(self):
+        pass
+
+class AKFileDialog:
+    def __init__(self):
+        pass
+
+class AKAction(QObject):
+    def __init__(self):
+        pass
+
+class AKActionMenu(QMenu):
+    def __init__(self):
+        pass
+
+class AKMenu(QMenu):
+    def __init__(self, service):
+        QMenu.__init__(self)
+        pass
+
+class AKNotification:
+    def __init__(self):
+        pass
+
+class AKToggleAction:
+    def __init__(self, name):
+        pass
+
+class AKStandardAction:
+    def __init__(self, name):
+        pass
+    
+class AKSystemTrayIcon(QSystemTrayIcon):
+    def __init__(self, name):
+        QSystemTrayIcon.__init__(self)
+        self.icon = AKIcon(name)
 
 # Load the icon from the name
-class KIcon(QIcon):
+class AKIcon(QIcon):
     def __init__(self, name):
+        QIcon.__init__(self)
         print("Loading icon:" + name)
         self.icon_name = name
+
+class AKPageDialog(QDialog):
+    def __init__(self, name):
+        pass
+        
+class AKDialog(QDialog):
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+
+    def setMainWidget(self, widget):
+        self.mainWidget = widget
+        
+    def setPlainCaption(self, caption):
+        pass

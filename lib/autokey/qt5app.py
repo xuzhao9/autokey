@@ -111,7 +111,6 @@ class Application:
         if ConfigManager.SETTINGS[IS_FIRST_RUN] or configure:
             ConfigManager.SETTINGS[IS_FIRST_RUN] = False
             self.show_configure()
-
         self.handler = CallBackEventHander()
         kbChangeFilter = KeyBoardChangeFilter(self.service.mediator.interface)
         self.app.installEventFilter(kbChangeFilter)

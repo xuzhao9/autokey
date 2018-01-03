@@ -16,9 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging, sys, os, webbrowser, subprocess, time
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QMainWindow, QTreeWidgetItem
-from PyQt5 import Qsci
+from .qt5helper import i18n
+from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow
+from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem
 from .. import common
 
 #CONFIG_WINDOW_TITLE = i18n(common.CONFIG_WINDOW_TITLE)
@@ -27,7 +27,6 @@ ACTION_DESCRIPTION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)
 API_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/api.txt")
 
 from .dialogs import *
-from .qt5helper import i18n
 from .settingsdialog import SettingsDialog
 from ..configmanager import *
 from ..iomediator import Recorder
@@ -1044,10 +1043,10 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
 # ---- Configuration window
     
-class ConfigWindow(QMainWindow):
+class ConfigWindow(AKXmlGuiWindow):
 
     def __init__(self, app):
-        QMainWindow.__init__(self)
+        AKXmlGuiWindow.__init__(self)
         self.centralWidget = CentralWidget(self, app)
         self.setCentralWidget(self.centralWidget)
         self.app = app
@@ -1058,18 +1057,18 @@ class ConfigWindow(QMainWindow):
         
         self.newTopFolder = self.__createAction("new-top-folder", i18n("Folder"), "folder-new", self.centralWidget.on_new_topfolder)
         self.newFolder = self.__createAction("new-folder", i18n("Sub-folder"), "folder-new", self.centralWidget.on_new_folder)
-        self.newPhrase = self.__createAction("new-phrase", i18n("Phrase"), "text-x-generic", self.centralWidget.on_new_phrase, KStandardShortcut.New)
+        self.newPhrase = self.__createAction("new-phrase", i18n("Phrase"), "text-x-generic", self.centralWidget.on_new_phrase, AKStandardShortcut.New)
         self.newScript = self.__createAction("new-script", i18n("Script"), "text-x-python", self.centralWidget.on_new_script)
         self.newScript.setShortcut(QKeySequence("Ctrl+Shift+n"))
-        self.save = self.__createAction("save", i18n("Save"), "document-save", self.centralWidget.on_save, KStandardShortcut.Save)
+        self.save = self.__createAction("save", i18n("Save"), "document-save", self.centralWidget.on_save, AKStandardShortcut.Save)
         
         self.create.addAction(self.newTopFolder)
         self.create.addAction(self.newFolder)
         self.create.addAction(self.newPhrase)
         self.create.addAction(self.newScript)
 
-        self.close = self.__createAction("close-window", i18n("Close Window"), "window-close", self.on_close, KStandardShortcut.Close)
-        KStandardAction.quit(self.on_quit, self.actionCollection())
+        self.close = self.__createAction("close-window", i18n("Close Window"), "window-close", self.on_close, AKStandardShortcut.Close)
+        AKStandardAction.quit(self.on_quit, self.actionCollection())
 
         # Edit Menu 
         self.cut = self.__createAction("cut-item", i18n("Cut Item"), "edit-cut", self.centralWidget.on_cut)
@@ -1080,8 +1079,8 @@ class ConfigWindow(QMainWindow):
         #self.copy.setShortcut(QKeySequence("Ctrl+Shift+c"))
         self.clone.setShortcut(QKeySequence("Ctrl+Shift+c"))
         
-        self.undo = self.__createAction("undo", i18n("Undo"), "edit-undo", self.centralWidget.on_undo, KStandardShortcut.Undo)
-        self.redo = self.__createAction("redo", i18n("Redo"), "edit-redo", self.centralWidget.on_redo, KStandardShortcut.Redo)
+        self.undo = self.__createAction("undo", i18n("Undo"), "edit-undo", self.centralWidget.on_undo, AKStandardShortcut.Undo)
+        self.redo = self.__createAction("redo", i18n("Redo"), "edit-redo", self.centralWidget.on_redo, AKStandardShortcut.Redo)
         
         rename = self.__createAction("rename", i18n("Rename"), None, self.centralWidget.on_rename)
         rename.setShortcut(QKeySequence("f2"))
@@ -1117,7 +1116,7 @@ class ConfigWindow(QMainWindow):
         self.centralWidget.listWidget.addAction(act)
 
         #self.createStandardStatusBarAction() # TODO statusbar
-        options = KXmlGuiWindow.Default ^ KXmlGuiWindow.StandardWindowOptions(KXmlGuiWindow.StatusBar)
+        options = AKXmlGuiWindow.Default ^ AKXmlGuiWindow.StandardWindowOptions(AKXmlGuiWindow.StatusBar)
         #options = KXmlGuiWindow.Default # TODO  statusbar
         self.setupGUI(options)
         
@@ -1181,12 +1180,12 @@ class ConfigWindow(QMainWindow):
         
     def __createAction(self, actionName, name, iconName=None, target=None, shortcut=None):
         if iconName is not None:
-            action = KAction(KIcon(iconName), name, self.actionCollection())
+            action = AKAction(AKIcon(iconName), name, self.actionCollection())
         else:
-            action = KAction(name, self.actionCollection())
+            action = AKAction(name, self.actionCollection())
         
         if shortcut is not None:
-            standardShortcut = KStandardShortcut.shortcut(shortcut)
+            standardShortcut = AKStandardShortcut.shortcut(shortcut)
             action.setShortcut(standardShortcut)
 
         if target is not None:
@@ -1197,23 +1196,25 @@ class ConfigWindow(QMainWindow):
 
     def __createToggleAction(self, actionName, name, target, iconName=None):
         if iconName is not None:
-            action = KToggleAction(KIcon(iconName), name, self.actionCollection())
+            action = AKToggleAction(AKIcon(iconName), name, self.actionCollection())
         else:
-            action = KToggleAction(name, self.actionCollection())
+            action = AKToggleAction(name, self.actionCollection())
             
         if target is not None:
-            self.connect(action, SIGNAL("triggered()"), target)
+            action.triggered.connect(target)
+            # self.connect(action, SIGNAL("triggered()"), target)
         self.actionCollection().addAction(actionName, action)
         return action
         
     def __createMenuAction(self, actionName, name, target=None, iconName=None):
         if iconName is not None:
-            action = KActionMenu(KIcon(iconName), name, self.actionCollection())
+            action = AKActionMenu(AKIcon(iconName), name, self.actionCollection())
         else:
-            action = KActionMenu(name, self.actionCollection())
+            action = AKActionMenu(name, self.actionCollection())
             
         if target is not None:
-            self.connect(action, SIGNAL("triggered()"), target)
+            action.triggered.connect(target)
+            #self.connect(action, SIGNAL("triggered()"), target)
         self.actionCollection().addAction(actionName, action)
         return action
         
@@ -1312,7 +1313,7 @@ class ConfigWindow(QMainWindow):
         webbrowser.open(common.BUG_URL, False, True)
 
     def on_about(self):
-        dlg = KAboutApplicationDialog(self.app.aboutData, self)
+        dlg = AKAboutApplicationDialog(self.app.aboutData, self)
         dlg.show()
 
 # ---- TreeWidget and helper functions
@@ -1354,7 +1355,7 @@ class FolderWidgetItem(QTreeWidgetItem):
     def __init__(self, parent, folder):
         QTreeWidgetItem.__init__(self)
         self.folder = folder
-        self.setIcon(0, KIcon("folder"))
+        self.setIcon(0, AKIcon("folder"))
         self.setText(0, folder.title)
         self.setText(1, folder.get_abbreviations())
         self.setText(2, folder.get_hotkey_string())
@@ -1388,7 +1389,7 @@ class PhraseWidgetItem(QTreeWidgetItem):
     def __init__(self, parent, phrase):
         QTreeWidgetItem.__init__(self)
         self.phrase = phrase
-        self.setIcon(0, KIcon("text-x-generic"))
+        self.setIcon(0, AKIcon("text-x-generic"))
         self.setText(0, phrase.description)
         self.setText(1, phrase.get_abbreviations())
         self.setText(2, phrase.get_hotkey_string())
@@ -1422,7 +1423,7 @@ class ScriptWidgetItem(QTreeWidgetItem):
     def __init__(self, parent, script):
         QTreeWidgetItem.__init__(self)
         self.script = script
-        self.setIcon(0, KIcon("text-x-python"))
+        self.setIcon(0, AKIcon("text-x-python"))
         self.setText(0, script.description)
         self.setText(1, script.get_abbreviations())
         self.setText(2, script.get_hotkey_string())
@@ -1471,11 +1472,11 @@ class ListWidgetHandler(logging.Handler):
         try:
             item = QListWidgetItem(self.format(record))
             if record.levelno > logging.INFO:
-                item.setIcon(KIcon("dialog-warning"))
+                item.setIcon(AKIcon("dialog-warning"))
                 item.setForeground(QBrush(Qt.red))
                 
             else:
-                item.setIcon(KIcon("dialog-information"))
+                item.setIcon(AKIcon("dialog-information"))
 
             self.app.exec_in_main(self.__addItem, item)
                 

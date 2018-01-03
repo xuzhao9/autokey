@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2011 Chris Dekter
-# Copyright (C) 2017 Xu Zhao
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging, sys
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QApplication, QMenu, QWidgetAction
 
-from .qt5helper import i18n
+import logging, sys
+from .qt5helper import AKMenu, AKAction, AKActionMenu
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication
+
 from ..configmanager import *
 
 _logger = logging.getLogger("phrase-menu")
@@ -42,7 +42,7 @@ class MenuBase:
         else:
             _logger.debug("Sorting phrase menu by item name/title")
             folders.sort(key=lambda obj: str(obj))
-            items.sort(key=lambda obj: str(obj))
+            items.sort(key=lambda obj: str(obj))      
         
         if len(folders) == 1 and len(items) == 0 and onDesktop:
             # Only one folder - create menu with just its folders and items
@@ -93,10 +93,10 @@ class MenuBase:
         # FIXME - menu does not get keyboard focus, so mnemonic is useless
         return desc
         
-class PopupMenu(QMenu, MenuBase):
+class PopupMenu(AKMenu, MenuBase):
     
     def __init__(self, service, folders=[], items=[], onDesktop=True, title=None):
-        QMenu.__init__(self)
+        AKMenu.__init__(self)
         MenuBase.__init__(self, service, folders, items, onDesktop, title)
 
         #if not ConfigManager.SETTINGS[MENU_TAKES_FOCUS]:
@@ -104,24 +104,25 @@ class PopupMenu(QMenu, MenuBase):
         # TODO - this doesn't always work - do something about this
             
 
-class SubMenu(QWidgetAction, MenuBase):
+class SubMenu(AKActionMenu, MenuBase):
     
     def __init__(self, title, parent, service, folders=[], items=[], onDesktop=True):
-        QWidgetAction.__init__(self, title, parent)
+        AKActionMenu.__init__(self, title, parent)
         MenuBase.__init__(self, service, folders, items, onDesktop)
 
         
-class ItemAction(QWidgetAction):
+class ItemAction(AKAction):
     
     def __init__(self, parent, description, item, target):
-        QWidgetAction.__init__(self, description, parent)
+        AKAction.__init__(self, description, parent)
         self.item = item
+        # self.connect(self, SIGNAL("triggered()"), self.on_triggered)
+        # self.connect(self, SIGNAL("actionSig"), target)
         self.triggered.connect(self.on_triggered)
         self.actionSig.connect(target)
 
     def on_triggered(self):
-        self.actionSig.emit()
-        # self.emit(SIGNAL("actionSig"), self.item) # old style of signal emission
+        self.actionSig.emit(self.item)
 
         
 # ---- TODO Testing stuff - remove later  
@@ -168,6 +169,22 @@ if __name__ == "__main__":
     myPhrases.append(MockPhrase("phrase 2"))
     myPhrases.append(MockPhrase("phrase 3"))    
     
+    # appName     = "KApplication"
+    # catalog     = ""
+    # programName = ki18n ("KApplication")
+    # version     = "1.0"
+    # description = ki18n ("KApplication/KMainWindow/KAboutData example")
+    # license     = KAboutData.License_GPL
+    # copyright   = ki18n ("(c) 2007 Jim Bublitz")
+    # text        = ki18n ("none")
+    # homePage    = "www.riverbankcomputing.com"
+    # bugEmail    = "jbublitz@nwinternet.com"
+    
+    # aboutData   = KAboutData (appName, catalog, programName, version, description,
+    #                             license, copyright, text, homePage, bugEmail)
+    
+        
+    # KCmdLineArgs.init (sys.argv, aboutData)
     app = QApplication()
     
     menu = PopupMenu(MockExpansionService(app), [myFolder], myPhrases)
@@ -179,4 +196,3 @@ if __name__ == "__main__":
     #app.exec_()
     #print "done"
     sys.exit()    
-

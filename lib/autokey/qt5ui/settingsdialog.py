@@ -17,12 +17,13 @@
 
 import sys
 
+from PyQt5.QtWidgets import QWidget
+
+from .qt5helper import i18n, AKFileDialog, AKAutostart, AKPageDialog
+
 from ..configmanager import *
 from .. import iomediator, interface, model
 from .dialogs import GlobalHotkeyDialog
-from .qt5helper import i18n, KIcon
-
-from PyQt5.QtWidgets import QWidget, QDialog
 
 from . import generalsettings, specialhotkeysettings, enginesettings
 
@@ -156,38 +157,36 @@ class EngineSettings(QWidget, enginesettings.Ui_Form):
             sys.path.append(self.path)
         
     def on_browseButton_pressed(self):
-        # path = KFileDialog.getExistingDirectory(self.parentWidget(), i18n("Choose Directory"))
-        # if path != '':
-        #    self.path = path
-        #    self.folderLabel.setText(self.path)
-        # TODO: implement file dialog callout using PyQt5
-        pass
+        path = AKFileDialog.getExistingDirectory(self.parentWidget(), i18n("Choose Directory"))
+        if path != '':
+            self.path = path
+            self.folderLabel.setText(self.path)
         
 
-class SettingsDialog(QDialog):
+class SettingsDialog(AKPageDialog):
     
     def __init__(self, parent):
-        QDialog.__init__(self, parent)
+        AKPageDialog.__init__(self, parent)
         self.app = parent.topLevelWidget().app # Used by GlobalHotkeyDialog
         
         self.genPage = self.addPage(GeneralSettings(self), i18n("General"))
-        self.genPage.setIcon(QIcon("preferences-other"))
+        self.genPage.setIcon(AKIcon("preferences-other"))
         
         self.hkPage = self.addPage(SpecialHotkeySettings(self, parent.app.configManager), i18n("Special Hotkeys"))
-        self.hkPage.setIcon(QIcon("preferences-desktop-keyboard"))
+        self.hkPage.setIcon(AKIcon("preferences-desktop-keyboard"))
         
         self.ePage = self.addPage(EngineSettings(self, parent.app.configManager), i18n("Script Engine"))
-        self.ePage.setIcon(QIcon("text-x-script"))
+        self.ePage.setIcon(AKIcon("text-x-script"))
         
         self.setCaption(i18n("Settings"))
         
     def slotButtonClicked(self, button):
-        if button == KDialog.Ok:
+        if button == AKDialog.Ok:
             self.genPage.widget().save()
             self.hkPage.widget().save()
             self.ePage.widget().save()
             self.app.configManager.config_altered(True)
             self.app.update_notifier_visibility()
             
-        KDialog.slotButtonClicked(self, button)
+        AKDialog.slotButtonClicked(self, button)
         

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2017 Xu Zhao
+# Copyright (C) 2011 Chris Dekter
+# Copyright (C) 2018 Xu Zhao
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,70 +16,75 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging, sys
+# from PyKDE4.kdeui import KNotification, KSystemTrayIcon, KIcon, KStandardAction, KToggleAction
+# from PyKDE4.kdecore import ki18n, i18n
+# from PyQt4.QtCore import SIGNAL
+# from PyQt4.QtGui import QSystemTrayIcon
 
-from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QAction
+from .qt5helper import i18n, AKNotification, AKSystemTrayIcon, AKIcon, AKToggleAction, AKStandardAction
 
+from PyQt5.QtWidgets import QSystemTrayIcon
+
+from . import popupmenu
 from ..configmanager import *
-from .qt5helper import i18n
 
 TOOLTIP_RUNNING = i18n("AutoKey - running")
 TOOLTIP_PAUSED = i18n("AutoKey - paused")
 
-class Notifier(QObject):
+class Notifier:
+    
     def __init__(self, app):
-        super(Notifier, self).__init__()
         self.app = app
         self.configManager = app.configManager
         
-        self.trayAvailable = QSystemTrayIcon.isSystemTrayAvailable()
-        if self.trayAvailable:
-            # TODO: find the icon file from the following three places:
-            # 1. ./config
-            # 2. CONFIG_MANAGER[CONFIG_DIR]/config/
-            # 3. /usr/share/icons/hicolor/scalable/
-            icon_path = "./config/%s.svg" % ConfigManager.SETTINGS[NOTIFICATION_ICON]
-            notify_icon = QIcon(icon_path)
-            self.icon = QSystemTrayIcon(self)
-            self.icon.setIcon(notify_icon)
-            self.icon.activated.connect(self.on_activate)
-            
-            self.build_menu()
-            self.update_tool_tip()
-            
-            if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
-                self.icon.show()
+        self.icon = AKSystemTrayIcon(ConfigManager.SETTINGS[NOTIFICATION_ICON])
+        # self.icon.connect(self.icon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.on_activate)
+        self.icon.activated.connect(self.on_activate)
 
+        self.build_menu()
+        self.update_tool_tip()
+
+        if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
+            self.icon.show()
+                        
     def update_tool_tip(self):
         if ConfigManager.SETTINGS[SERVICE_RUNNING]:
-            self.icon.setToolTip(TOOLTIP_RUNNING)
+            self.icon.setToolTip(TOOLTIP_RUNNING.toString())
             self.toggleAction.setChecked(True)
         else:
-            self.icon.setToolTip(TOOLTIP_PAUSED)
+            self.icon.setToolTip(TOOLTIP_PAUSED.toString())
             self.toggleAction.setChecked(False)
-
+            
     def build_menu(self):
         if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
+            # Get phrase folders to add to main menu
             folders = []
             items = []
+
             for folder in self.configManager.allFolders:
                 if folder.showInTrayMenu:
-                    folder.append(folder)
-
+                    folders.append(folder)
+            
             for item in self.configManager.allItems:
                 if item.showInTrayMenu:
                     items.append(item)
-            # TODO: add popupmenu
-            # menu = popupmenu.PopupMenu(self.app.service, folders, items, False, "AutoKey")
-            # if len(items) > 0:
-            #     menu.addSeparator()
-            self.toggleAction = QAction("Enable Monitoring")
-            # self.toggleAction.connect("triggered()", self.on_enable_toggled)
+                    
+            # Construct main menu
+            menu = popupmenu.PopupMenu(self.app.service, folders, items, False, "AutoKey")
+            if len(items) > 0:
+                menu.addSeparator()
+            
+            self.toggleAction = AKToggleAction(i18n("&Enable Monitoring"), menu)
+            # self.toggleAction.connect(self.toggleAction, SIGNAL("triggered()"), self.on_enable_toggled)
+            self.toggleAction.triggered.connect(self.on_enable_toggled)
             self.toggleAction.setChecked(self.app.service.is_running())
-            self.toggleAction.setEnabled(not self.app.serviceDisabled)
-            # self.icon.setContextMenu(menu)
+            self.toggleAction.setEnabled(not self.app.serviceDisabled)           
+            
+            menu.addAction(self.toggleAction)
+            menu.addAction(AKIcon("edit-clear"), i18n("&Hide Icon"), self.on_hide_icon)
+            menu.addAction(AKIcon("configure"), i18n("&Show Main Window"), self.on_configure)
+            menu.addAction(AKStandardAction.quit(self.on_quit, menu))
+            self.icon.setContextMenu(menu)
 
     def update_visible_status(self):
         self.icon.setVisible(ConfigManager.SETTINGS[SHOW_TRAY_ICON])
@@ -86,11 +92,11 @@ class Notifier(QObject):
 
     def hide_icon(self):
         if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
-            self.icon.hider()
+            self.icon.hide()
 
     def notify_error(self, message):
         pass
-
+        
     # ---- Signal handlers ----
 
     def on_show_error(self):
@@ -98,18 +104,20 @@ class Notifier(QObject):
 
     def on_quit(self):
         self.app.shutdown()
-        
+
     def on_activate(self, reason):
         if reason == QSystemTrayIcon.ActivationReason(QSystemTrayIcon.Trigger):
             self.on_configure()
-        pass
 
     def on_configure(self):
         self.app.show_configure()
-
+        
     def on_enable_toggled(self):
         if self.toggleAction.isChecked():
             self.app.unpause_service()
         else:
             self.app.pause_service()
-        
+            
+    def on_hide_icon(self):
+        self.icon.hide()
+        ConfigManager.SETTINGS[SHOW_TRAY_ICON] = False
