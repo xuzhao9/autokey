@@ -69,7 +69,8 @@ class Application:
 
             self.initialise()
         except Exception as e:
-            self.show_error_dialog("Fatal error starting AutoKey Qt5 App.\nError message: " + str(e))
+            # self.show_error_dialog("Fatal error starting AutoKey Qt5 App.\nError message: " + str(e))
+            print(str(e))
             logging.exception("Fatal error starting AutoKey Qt5 App: " + str(e))
             sys.exit(1)
 
@@ -101,7 +102,9 @@ class Application:
             self.show_error_dialog("Error starting interface. Keyboard monitoring will be disabled.\n" +
                                    "Check your system/configuration.", str(e))
 
+        print("step 1")
         self.notifier = Notifier(self)
+        print("here!!")
         self.configWindow = None
         self.monitor.start()
 

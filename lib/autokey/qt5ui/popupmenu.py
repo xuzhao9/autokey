@@ -18,8 +18,9 @@
 
 import logging, sys
 from .qt5helper import AKMenu, AKAction, AKActionMenu
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMenu
 
 from ..configmanager import *
 
@@ -45,6 +46,7 @@ class MenuBase:
             items.sort(key=lambda obj: str(obj))      
         
         if len(folders) == 1 and len(items) == 0 and onDesktop:
+            print(":here")
             # Only one folder - create menu with just its folders and items
             self.addTitle(folders[0].title)
             for folder in folders[0].folders:
@@ -93,12 +95,11 @@ class MenuBase:
         # FIXME - menu does not get keyboard focus, so mnemonic is useless
         return desc
         
-class PopupMenu(AKMenu, MenuBase):
-    
+class PopupMenu(MenuBase, AKMenu):
     def __init__(self, service, folders=[], items=[], onDesktop=True, title=None):
         AKMenu.__init__(self)
         MenuBase.__init__(self, service, folders, items, onDesktop, title)
-
+        
         #if not ConfigManager.SETTINGS[MENU_TAKES_FOCUS]:
         self.setFocusPolicy(Qt.StrongFocus)
         # TODO - this doesn't always work - do something about this

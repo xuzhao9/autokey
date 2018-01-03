@@ -17,7 +17,9 @@
 
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon
+from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
+from PyQt5.QtWidgets import QToolButton
+from PyQt5 import QtCore, Qt
 
 def i18n(*args):
     r = str()
@@ -49,18 +51,42 @@ class AKFileDialog:
     def __init__(self):
         pass
 
-class AKAction(QObject):
-    def __init__(self):
+# done.
+class AKAction(QWidgetAction):
+    def __init__(self, parent):
+        QWidgetAction.__init__(self, parent)
+    
+    def __init__(self, description, parent):
+        QWidgetAction.__init__(self, parent)
+        self.setText(description)
         pass
 
-class AKActionMenu(QMenu):
-    def __init__(self):
+# done.
+class AKActionMenu(AKAction):
+    def __init__(self, title, parent):
+        AKAction.__init__(self, title, parent)
         pass
 
 class AKMenu(QMenu):
-    def __init__(self, service):
+    def __init__(self):
         QMenu.__init__(self)
         pass
+    
+    def addTitle(self, title):
+        buttonAction = QAction(self)
+        font = buttonAction.font()
+        font.setBold(True)
+        buttonAction.setFont(font)
+        buttonAction.setText(title)
+        action = QWidgetAction(self)
+        action.setObjectName("akmenu_title")
+        titleButton = QToolButton(self)
+        titleButton.setDefaultAction(buttonAction)
+        titleButton.setDown(True)
+        titleButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        action.setDefaultWidget(titleButton)
+        self.insertAction(None, action) # before is none in this case
+        return action
 
 class AKNotification:
     def __init__(self):
@@ -76,6 +102,7 @@ class AKStandardAction:
     
 class AKSystemTrayIcon(QSystemTrayIcon):
     def __init__(self, name):
+        print("tray!")
         QSystemTrayIcon.__init__(self)
         self.icon = AKIcon(name)
 

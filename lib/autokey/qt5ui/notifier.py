@@ -40,9 +40,10 @@ class Notifier:
         self.icon = AKSystemTrayIcon(ConfigManager.SETTINGS[NOTIFICATION_ICON])
         # self.icon.connect(self.icon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.on_activate)
         self.icon.activated.connect(self.on_activate)
-
         self.build_menu()
+        print("ok1.4!")
         self.update_tool_tip()
+        print("ok2!")
 
         if ConfigManager.SETTINGS[SHOW_TRAY_ICON]:
             self.icon.show()
