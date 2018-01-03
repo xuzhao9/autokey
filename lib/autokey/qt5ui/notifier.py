@@ -50,10 +50,10 @@ class Notifier:
                         
     def update_tool_tip(self):
         if ConfigManager.SETTINGS[SERVICE_RUNNING]:
-            self.icon.setToolTip(TOOLTIP_RUNNING.toString())
+            self.icon.setToolTip(TOOLTIP_RUNNING)
             self.toggleAction.setChecked(True)
         else:
-            self.icon.setToolTip(TOOLTIP_PAUSED.toString())
+            self.icon.setToolTip(TOOLTIP_PAUSED)
             self.toggleAction.setChecked(False)
             
     def build_menu(self):
@@ -74,7 +74,7 @@ class Notifier:
             menu = popupmenu.PopupMenu(self.app.service, folders, items, False, "AutoKey")
             if len(items) > 0:
                 menu.addSeparator()
-            
+            print("after popupmenu!")
             self.toggleAction = AKToggleAction(i18n("&Enable Monitoring"), menu)
             # self.toggleAction.connect(self.toggleAction, SIGNAL("triggered()"), self.on_enable_toggled)
             self.toggleAction.triggered.connect(self.on_enable_toggled)

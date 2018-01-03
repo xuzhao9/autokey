@@ -18,7 +18,7 @@
 
 import logging, sys
 from .qt5helper import AKMenu, AKAction, AKActionMenu
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication, QMenu
 
@@ -67,7 +67,8 @@ class MenuBase:
             if len(folders) > 0:
                 self.addSeparator()
     
-            self._addItemsToSelf(items, onDesktop)        
+            self._addItemsToSelf(items, onDesktop)
+        print("done with popupmenu")
         
     def _addItem(self, description, item):
         action = ItemAction(self, self._getMnemonic(description), item, self.service.item_selected)
@@ -113,6 +114,8 @@ class SubMenu(AKActionMenu, MenuBase):
 
         
 class ItemAction(AKAction):
+    
+    actionSig = pyqtSignal()
     
     def __init__(self, parent, description, item, target):
         AKAction.__init__(self, description, parent)

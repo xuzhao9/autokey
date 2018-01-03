@@ -92,13 +92,19 @@ class AKNotification:
     def __init__(self):
         pass
 
-class AKToggleAction:
-    def __init__(self, name):
+class AKToggleAction(AKAction):
+    def __init__(self, text, parent):
+        AKAction.__init__(self, text, parent)
         pass
 
 class AKStandardAction:
     def __init__(self, name):
         pass
+    def quit(target, parent):
+        # construct an action
+        ret = AKAction(i18n("Quit"), parent)
+        ret.triggered.connect(target)
+        return ret
     
 class AKSystemTrayIcon(QSystemTrayIcon):
     def __init__(self, name):

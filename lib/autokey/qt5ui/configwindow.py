@@ -347,7 +347,7 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMARY.toString(), msg)
+            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMARY, msg)
                 
         return len(errors) == 0
         
@@ -448,7 +448,7 @@ class PhrasePage(QWidget, phrasepage.Ui_PhrasePage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMARY.toString(), msg)
+            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         
@@ -537,7 +537,7 @@ class FolderPage(QWidget, folderpage.Ui_FolderPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMARY.toString(), msg)
+            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         

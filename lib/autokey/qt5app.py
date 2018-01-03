@@ -71,6 +71,8 @@ class Application:
         except Exception as e:
             # self.show_error_dialog("Fatal error starting AutoKey Qt5 App.\nError message: " + str(e))
             print(str(e))
+            import traceback
+            traceback.print_tb(err.__traceback__)
             logging.exception("Fatal error starting AutoKey Qt5 App: " + str(e))
             sys.exit(1)
 
@@ -132,6 +134,7 @@ class Application:
         """
         logging.info("Displaying configuration window")
         try:
+            print("showing config!")
             self.configWindow.showNormal()
             self.configWindow.activateWindow()
         except (AttributeError, RuntimeError):
