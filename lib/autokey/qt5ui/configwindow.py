@@ -1134,7 +1134,7 @@ class ConfigWindow(AKXmlGuiWindow):
         self.centralWidget.populate_tree(self.app.configManager)
         self.centralWidget.set_splitter(self.size())
         
-        # self.setAutoSaveSettings()
+        self.setAutoSaveSettings()
         
     def set_dirty(self):
         self.centralWidget.set_dirty(True)

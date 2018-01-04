@@ -127,6 +127,10 @@ class AKXmlGuiWindow(QMainWindow):
     def setHelpMenuEnabled(self, showHelpMenu = True):
         self.showHelpMenu = showHelpMenu
 
+    # TODO: implement this
+    def setAutoSaveSettings(self):
+        pass
+
 class AKMessageBox:
     def __init__(self):
         pass
