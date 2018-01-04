@@ -40,8 +40,6 @@ COPYRIGHT = """(c) 2009-2012 Chris Dekter
 (c) 2017 Xu Zhao"""
 TEXT = ""
 
-APP = None
-
 class Application:
     """
     Main application class; starting and stopping of the application is controlled
@@ -50,7 +48,6 @@ class Application:
     
     def __init__(self):
         self.app = QApplication(sys.argv)
-        APP = self.app
         try:
             # Initialise config dir
             if not os.path.exists(CONFIG_DIR):
@@ -109,8 +106,7 @@ class Application:
         return True
 
     def main(self):
-        self.app.exec_()
-        
+        self.app.exec_()        
 
     def initialise(self, configure = None):
         logging.info("Initialising application.")
@@ -141,7 +137,7 @@ class Application:
         if ConfigManager.SETTINGS[IS_FIRST_RUN] or configure:
             ConfigManager.SETTINGS[IS_FIRST_RUN] = False
             self.show_configure()
-        self.handler = CallbackEventHandler()
+        self.handler = CallbackEventHandler(self.app)
         kbChangeFilter = KeyboardChangeFilter(self.service.mediator.interface)
         self.app.installEventFilter(kbChangeFilter)
 
@@ -273,8 +269,9 @@ class Application:
 
 
 class CallbackEventHandler(QObject):
-    def __init__(self):
+    def __init__(self, app):
         QObject.__init__(self)
+        self.app = app
         self.queue = queue.Queue()
 
     def customEvent(self, event):
@@ -289,9 +286,8 @@ class CallbackEventHandler(QObject):
                 logging.warn("callback event failed: %r %r", callback, args, exc_info=True)
 
     def postEventWithCallback(self, callback, *args):
-        self.queue.put((callback, args))()
-        app = APP
-        app.postEvent(self, QEvent(QEvent.User))
+        self.queue.put((callback, args))
+        self.app.postEvent(self, QEvent(QEvent.User))
 
         
 class KeyboardChangeFilter(QObject):
