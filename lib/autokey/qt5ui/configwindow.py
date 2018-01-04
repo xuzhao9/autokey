@@ -17,8 +17,9 @@
 
 import logging, sys, os, webbrowser, subprocess, time
 from .qt5helper import i18n
-from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu, AKAction
+from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu, AKAction, AKStandardAction, AKToggleAction
 from PyQt5 import Qsci
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QListWidgetItem, QListWidget
 from .. import common
@@ -49,7 +50,7 @@ def set_url_label(button, path):
     
     button.setText(text)
     # TODO elide text?
-    button.setUrl("file://" + path)
+    # button.setUrl("file://" + path)
 
 # ---- Internal widgets
 
@@ -108,7 +109,7 @@ class SettingsWidget(QWidget, settingswidget.Ui_SettingsWidget):
     def save(self):
         # Perform hotkey ungrab
         if model.TriggerMode.HOTKEY in self.currentItem.modes:
-            self.topLevelWidget().app.hotkey_removed(self.currentItem)
+            self.window().app.hotkey_removed(self.currentItem)
         
         self.currentItem.set_modes([])
         if self.abbrEnabled:
@@ -121,10 +122,10 @@ class SettingsWidget(QWidget, settingswidget.Ui_SettingsWidget):
             self.currentItem.set_window_titles(None)
 
         if self.hotkeyEnabled:
-            self.topLevelWidget().app.hotkey_created(self.currentItem)
+            self.window().app.hotkey_created(self.currentItem)
             
     def set_dirty(self):
-        self.topLevelWidget().set_dirty()
+        self.window().set_dirty()
         
     def validate(self):
         # Start by getting all applicable information
@@ -151,7 +152,7 @@ class SettingsWidget(QWidget, settingswidget.Ui_SettingsWidget):
         # Validate
         ret = []
         
-        configManager = self.topLevelWidget().app.configManager
+        configManager = self.window().app.configManager
 
         for abbr in abbreviations:        
             unique, conflicting = configManager.check_abbreviation_unique(abbr, filterExpression, self.currentItem)
@@ -274,8 +275,8 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         self.showInTrayCheckbox.setChecked(script.showInTrayMenu)
         self.promptCheckbox.setChecked(script.prompt)
         self.settingsWidget.load(script)
-        self.topLevelWidget().set_undo_available(False)
-        self.topLevelWidget().set_redo_available(False)
+        self.window().set_undo_available(False)
+        self.window().set_redo_available(False)
         
         if self.is_new_item():
             self.urlLabel.setEnabled(False)
@@ -303,11 +304,11 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
     
     def reset(self):
         self.load(self.currentScript)
-        self.topLevelWidget().set_undo_available(False)
-        self.topLevelWidget().set_redo_available(False)
+        self.window().set_undo_available(False)
+        self.window().set_redo_available(False)
     
     def set_dirty(self):
-        self.topLevelWidget().set_dirty()  
+        self.window().set_dirty()  
         
     def start_record(self):
         self.scriptCodeEditor.append("\n")
@@ -330,11 +331,11 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         
     def undo(self):
         self.scriptCodeEditor.undo()
-        self.topLevelWidget().set_undo_available(self.scriptCodeEditor.isUndoAvailable())
+        self.window().set_undo_available(self.scriptCodeEditor.isUndoAvailable())
         
     def redo(self):
         self.scriptCodeEditor.redo()
-        self.topLevelWidget().set_redo_available(self.scriptCodeEditor.isRedoAvailable())
+        self.window().set_redo_available(self.scriptCodeEditor.isRedoAvailable())
         
     def validate(self):
         errors = []
@@ -349,7 +350,7 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMARY, msg)
+            KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMARY, msg)
                 
         return len(errors) == 0
         
@@ -357,8 +358,8 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
 
     def on_scriptCodeEditor_textChanged(self):
         self.set_dirty()
-        self.topLevelWidget().set_undo_available(self.scriptCodeEditor.isUndoAvailable())
-        self.topLevelWidget().set_redo_available(self.scriptCodeEditor.isRedoAvailable())
+        self.window().set_undo_available(self.scriptCodeEditor.isUndoAvailable())
+        self.window().set_redo_available(self.scriptCodeEditor.isRedoAvailable())
 
     def on_promptCheckbox_stateChanged(self, state):
         self.set_dirty()
@@ -450,12 +451,12 @@ class PhrasePage(QWidget, phrasepage.Ui_PhrasePage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMAR, msg)
+            KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         
     def set_dirty(self):
-        self.topLevelWidget().set_dirty()
+        self.window().set_dirty()
         
     def undo(self):
         self.phraseText.undo()
@@ -471,10 +472,10 @@ class PhrasePage(QWidget, phrasepage.Ui_PhrasePage):
         self.set_dirty()
         
     def on_phraseText_undoAvailable(self, state):
-        self.topLevelWidget().set_undo_available(state)
+        self.window().set_undo_available(state)
         
     def on_phraseText_redoAvailable(self, state):
-        self.topLevelWidget().set_redo_available(state)
+        self.window().set_redo_available(state)
     
     def on_predictCheckbox_stateChanged(self, state):
         self.set_dirty()
@@ -539,12 +540,12 @@ class FolderPage(QWidget, folderpage.Ui_FolderPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.topLevelWidget(), PROBLEM_MSG_PRIMAR, msg)
+            # KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         
     def set_dirty(self):
-        self.topLevelWidget().set_dirty()  
+        self.window().set_dirty()  
         
     # --- Signal handlers
     def on_showInTrayCheckbox_stateChanged(self, state):
@@ -562,7 +563,7 @@ class AkTreeWidget(QTreeWidget):
         return False
     
     def keyPressEvent(self, event):
-        if self.topLevelWidget().is_dirty() and \
+        if self.window().is_dirty() and \
             (event.matches(QKeySequence.MoveToNextLine) or event.matches(QKeySequence.MoveToPreviousLine)):
             veto = self.parentWidget().parentWidget().promptToSave()
             if not veto:
@@ -573,7 +574,7 @@ class AkTreeWidget(QTreeWidget):
             QTreeWidget.keyPressEvent(self, event)        
     
     def mousePressEvent(self, event):
-        if self.topLevelWidget().is_dirty():
+        if self.window().is_dirty():
             veto = self.parentWidget().parentWidget().promptToSave()
             if not veto:
                 QTreeWidget.mousePressEvent(self, event)
@@ -642,7 +643,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
     def promptToSave(self):
         if ConfigManager.SETTINGS[PROMPT_TO_SAVE]:
-            result = KMessageBox.questionYesNoCancel(self.topLevelWidget(),
+            result = KMessageBox.questionYesNoCancel(self.window(),
                         i18n("There are unsaved changes. Would you like to save them?"))
         
             if result == KMessageBox.Yes:
@@ -1116,7 +1117,7 @@ class ConfigWindow(AKXmlGuiWindow):
         # Log view context menu
         act = self.__createAction("clear-log", i18n("Clear Log"), None, self.centralWidget.on_clear_log)
         self.centralWidget.listWidget.addAction(act)
-        act = self.__createAction("clear-log", i18n("Save Log As..."), None, self.centralWidget.on_save_log)
+        act = self.__createAction("save-log-as", i18n("Save Log As..."), None, self.centralWidget.on_save_log)
         self.centralWidget.listWidget.addAction(act)
 
         #self.createStandardStatusBarAction() # TODO statusbar
@@ -1201,9 +1202,9 @@ class ConfigWindow(AKXmlGuiWindow):
 
     def __createToggleAction(self, actionName, name, target, iconName=None):
         if iconName is not None:
-            action = AKToggleAction(name, self.actionCollection(), icon = AKIcon(iconName))
+            action = AKToggleAction(self.actionCollection(), name, icon = AKIcon(iconName))
         else:
-            action = AKToggleAction(name, self.actionCollection())
+            action = AKToggleAction(self.actionCollection(), name)
             
         if target is not None:
             action.triggered.connect(target)

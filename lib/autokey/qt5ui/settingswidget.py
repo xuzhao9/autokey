@@ -44,3 +44,10 @@ class Ui_SettingsWidget(object):
         self.windowFilterLabel = QtWidgets.QLabel(SettingsWidget)
         self.windowFilterLabel.setObjectName("windowFilterLabel")
         self.gridLayout.addWidget(self.windowFilterLabel, 2, 1, 1, 1)
+        self.setFilterButton = QtWidgets.QPushButton(SettingsWidget)
+        self.setFilterButton.setObjectName("setFilterButton")
+        self.gridLayout.addWidget(self.setFilterButton, 2, 3, 1, 1)
+        self.clearFilterButton = QtWidgets.QPushButton(SettingsWidget)
+        self.clearFilterButton.setObjectName("clearFilterButton")
+        self.gridLayout.addWidget(self.clearFilterButton, 2, 4, 1, 1)
+

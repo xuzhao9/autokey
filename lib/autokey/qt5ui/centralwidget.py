@@ -28,7 +28,7 @@ class Ui_CentralWidget(object):
         self.treeWidget.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.treeWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.treeWidget.setAnimated(True)
-        self.treeWidget.setHeaderHidden(False)
+        # self.treeWidget.setHeaderHidden(False)
         self.treeWidget.setColumnCount(3)
         self.treeWidget.setObjectName("treeWidget")
         self.treeWidget.header().setVisible(True)

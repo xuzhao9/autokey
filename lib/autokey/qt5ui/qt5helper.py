@@ -29,6 +29,10 @@ def i18n(*args):
         r = r + str(element)
     return r
 
+class AKMessageBox(QMessageBox):
+    def __init__(self):
+        pass
+
 class AKAboutApplicationDialog:
     def __init__(self, aboutData, window):
         pass
@@ -37,6 +41,8 @@ class AKStandardShortcut:
     New = QKeySequence("Ctrl+n")
     Save = QKeySequence("Ctrl+s")
     Close = QKeySequence("Ctrl+w")
+    Undo = QKeySequence("Ctrl+z")
+    Redo = QKeySequence("Ctrl+Shift+z")
     # Already translated so nothing needs to be done
     def shortcut(keyseq):
         return keyseq
@@ -51,7 +57,7 @@ class AKAction(QWidgetAction):
             self.setIcon(icon)
         if not description == None:
             self.setText(description)
-
+            
     def setShortcut(self, keyseq):
         self.setShortcuts(keyseq)
  
@@ -86,15 +92,32 @@ class AKActionCollection(QObject):
         # Connect to the signals: no need to do this
         # emit inserted signal
         self.inserted.emit(action)
-        pass
     
 class AKXmlGuiWindow(QMainWindow):
+    ToolBar = 1
+    Keys = 2
+    StatusBar = 4
+    Save = 8
+    Create = 16
+    Default = ToolBar | Keys | StatusBar | Save | Create 
+
     def __init__(self):
         QMainWindow.__init__(self)
         self.actions = AKActionCollection()
+        self.showHelpMenu = True
+
+    def setupGUI(self, options):
+        # do nothing for now...
         pass
+        
+    def StandardWindowOptions(option):
+        return option
+    
     def actionCollection(self):
         return self.actions
+
+    def setHelpMenuEnabled(self, showHelpMenu = True):
+        self.showHelpMenu = showHelpMenu
 
 class AKMessageBox:
     def __init__(self):
@@ -117,10 +140,15 @@ class AKActionMenu(AKAction):
             AKAction.__init__(self, parent, icon = icon, description = title)
         self.m_delayed = True
         self.m_stickyMenu = True
-        
-    def addAction(self, action):
-        self.menu.addAction(action)
+
+    def menu(self):
+        if super(AKActionMenu, self).menu() == None:
+            self.setMenu(AKMenu())
+        return super(AKActionMenu, self).menu()
     
+    def addAction(self, action):
+        self.menu().addAction(action)
+
     def setDelayed(self, delayed):
         self.m_delayed = delayed
 
@@ -143,18 +171,18 @@ class AKMenu(QMenu):
         action.setDefaultWidget(titleButton)
         self.insertAction(None, action) # before is none in this case
         return action
-
-    def addAction(self, action):
-        pass
+    
     
 class AKNotification:
     def __init__(self):
         pass
 
 class AKToggleAction(AKAction):
-    def __init__(self, text, parent):
-        AKAction.__init__(self, parent, description = text)
-        pass
+    def __init__(self, parent, description, icon = None):
+        if icon == None:
+            AKAction.__init__(self, parent, description = description)
+        else:
+            AKAction.__init__(self, parent, description = description, icon = icon)
 
 class AKStandardAction:
     def __init__(self, name):

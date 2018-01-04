@@ -72,7 +72,7 @@ class Notifier:
             menu = popupmenu.PopupMenu(self.app.service, folders, items, False, "AutoKey")
             if len(items) > 0:
                 menu.addSeparator()
-            self.toggleAction = AKToggleAction(i18n("&Enable Monitoring"), menu)
+            self.toggleAction = AKToggleAction(menu, i18n("&Enable Monitoring"))
             # self.toggleAction.connect(self.toggleAction, SIGNAL("triggered()"), self.on_enable_toggled)
             self.toggleAction.triggered.connect(self.on_enable_toggled)
             self.toggleAction.setChecked(self.app.service.is_running())
