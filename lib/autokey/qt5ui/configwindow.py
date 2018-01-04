@@ -17,8 +17,9 @@
 
 import logging, sys, os, webbrowser, subprocess, time
 from .qt5helper import i18n
-from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu
+from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu, AKAction
 from PyQt5 import Qsci
+from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QListWidgetItem, QListWidget
 from .. import common
 
@@ -1183,23 +1184,24 @@ class ConfigWindow(AKXmlGuiWindow):
         
     def __createAction(self, actionName, name, iconName=None, target=None, shortcut=None):
         if iconName is not None:
-            action = AKAction(AKIcon(iconName), name, self.actionCollection())
+            action = AKAction(self.actionCollection(), icon = AKIcon(iconName), description = name)
         else:
-            action = AKAction(name, self.actionCollection())
+            action = AKAction(self.actionCollection(), description = name)
         
         if shortcut is not None:
             standardShortcut = AKStandardShortcut.shortcut(shortcut)
             action.setShortcut(standardShortcut)
 
         if target is not None:
-            self.connect(action, SIGNAL("triggered()"), target)
+            # self.connect(action, SIGNAL("triggered()"), target)
+            action.triggered.connect(target)
         self.actionCollection().addAction(actionName, action)
         return action
 
 
     def __createToggleAction(self, actionName, name, target, iconName=None):
         if iconName is not None:
-            action = AKToggleAction(AKIcon(iconName), name, self.actionCollection())
+            action = AKToggleAction(name, self.actionCollection(), icon = AKIcon(iconName))
         else:
             action = AKToggleAction(name, self.actionCollection())
             
@@ -1211,9 +1213,9 @@ class ConfigWindow(AKXmlGuiWindow):
         
     def __createMenuAction(self, actionName, name, target=None, iconName=None):
         if iconName is not None:
-            action = AKActionMenu(AKIcon(iconName), name, self.actionCollection())
+            action = AKActionMenu(self.actionCollection(),name, icon = AKIcon(iconName))
         else:
-            action = AKActionMenu(name, self.actionCollection())
+            action = AKActionMenu(self.actionCollection(), name)
             
         if target is not None:
             action.triggered.connect(target)

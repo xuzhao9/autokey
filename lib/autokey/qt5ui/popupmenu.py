@@ -116,7 +116,7 @@ class ItemAction(AKAction):
     actionSig = pyqtSignal()
     
     def __init__(self, parent, description, item, target):
-        AKAction.__init__(self, description, parent)
+        AKAction.__init__(self, parent, description = description)
         self.item = item
         # self.connect(self, SIGNAL("triggered()"), self.on_triggered)
         # self.connect(self, SIGNAL("actionSig"), target)

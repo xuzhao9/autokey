@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
 from PyQt5.QtWidgets import QToolButton, QMainWindow
 from PyQt5 import QtCore, Qt
@@ -34,14 +34,58 @@ class AKAboutApplicationDialog:
         pass
 
 class AKStandardShortcut:
-    def __init__(self):
-        pass
+    New = QKeySequence("Ctrl+n")
+    Save = QKeySequence("Ctrl+s")
+    Close = QKeySequence("Ctrl+w")
+    # Already translated so nothing needs to be done
+    def shortcut(keyseq):
+        return keyseq
 
+# done.
+class AKAction(QWidgetAction):
+    triggered = pyqtSignal()
+    
+    def __init__(self, parent, icon = None, description = None):
+        QWidgetAction.__init__(self, parent)
+        if not icon == None:
+            self.setIcon(icon)
+        if not description == None:
+            self.setText(description)
+
+    def setShortcut(self, keyseq):
+        self.setShortcuts(keyseq)
+ 
 class AKActionCollection(QObject):
+    inserted = pyqtSignal(AKAction)
+    
     def __init__(self):
         QObject.__init__(self)
+        self.actions = list()
+        self.actionByName = dict()
+    
+    def insertAction(self, name, action):
+        self.actionByName[name] = action
+        self.actions.append(action)
+        
     def addAction(self, name, action):
         objectName = action.objectName()
+        indexName = name
+        if indexName == None:
+            # No name provided, use the objectName
+            indexName = objectName
+        else:
+            action.setObjectName(indexName)
+        # If still no indexName, make one up.
+        if indexName == None:
+            indexName = "unamed-{}" % action
+            action.setObjectName(indexName)
+        # Check if we already have an action with this name. If so, panic
+        assert(not (indexName in self.actionByName))
+        # Add action to our lists
+        self.insertAction(name, action)
+        # Connect to the signals: no need to do this
+        # emit inserted signal
+        self.inserted.emit(action)
         pass
     
 class AKXmlGuiWindow(QMainWindow):
@@ -63,27 +107,26 @@ class AKAutostart:
 class AKFileDialog:
     def __init__(self):
         pass
-
-# done.
-class AKAction(QWidgetAction):
-    def __init__(self, parent):
-        QWidgetAction.__init__(self, parent)
-    
-    def __init__(self, description, parent):
-        QWidgetAction.__init__(self, parent)
-        self.setText(description)
-        pass
-
+       
 # done.
 class AKActionMenu(AKAction):
-    def __init__(self, title, parent):
-        AKAction.__init__(self, title, parent)
-        pass
+    def __init__(self, parent, title, icon = None):
+        if icon == None:
+            AKAction.__init__(self, parent, description = title)
+        else:
+            AKAction.__init__(self, parent, icon = icon, description = title)
+        self.m_delayed = True
+        self.m_stickyMenu = True
+        
+    def addAction(self, action):
+        self.menu.addAction(action)
+    
+    def setDelayed(self, delayed):
+        self.m_delayed = delayed
 
 class AKMenu(QMenu):
     def __init__(self):
         QMenu.__init__(self)
-        pass
     
     def addTitle(self, title):
         buttonAction = QAction(self)
@@ -101,13 +144,16 @@ class AKMenu(QMenu):
         self.insertAction(None, action) # before is none in this case
         return action
 
+    def addAction(self, action):
+        pass
+    
 class AKNotification:
     def __init__(self):
         pass
 
 class AKToggleAction(AKAction):
     def __init__(self, text, parent):
-        AKAction.__init__(self, text, parent)
+        AKAction.__init__(self, parent, description = text)
         pass
 
 class AKStandardAction:
@@ -115,7 +161,7 @@ class AKStandardAction:
         pass
     def quit(target, parent):
         # construct an action
-        ret = AKAction(i18n("Quit"), parent)
+        ret = AKAction(parent, description = i18n("Quit"))
         ret.triggered.connect(target)
         return ret
     
