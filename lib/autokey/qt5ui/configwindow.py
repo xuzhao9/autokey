@@ -17,7 +17,7 @@
 
 import logging, sys, os, webbrowser, subprocess, time
 from .qt5helper import i18n
-from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu, AKAction, AKStandardAction, AKToggleAction
+from .qt5helper import AKAboutApplicationDialog, AKStandardShortcut, AKXmlGuiWindow, AKIcon, AKActionMenu, AKAction, AKStandardAction, AKToggleAction, AKFileDialog
 from PyQt5 import Qsci
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -715,7 +715,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
             self.__createFolder(None)
 
         elif result != AKMessageBox.Cancel:
-            path = AKFileDialog.getExistingDirectory(KUrl(), self.window())
+            path = AKFileDialog.getExistingDirectory(AKUrl(), self.window())
             path = ""
 
             if path != "":
@@ -926,7 +926,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.parentWidget().cancel_record()
 
     def on_save_log(self):
-        fileName = AKFileDialog.getSaveFileName(KUrl(), "", self.parentWidget(),
+        fileName = AKFileDialog.getSaveFileName(AKUrl(), "", self.parentWidget(),
                     "Save log file")
         fileName = ""
 
@@ -1134,7 +1134,7 @@ class ConfigWindow(AKXmlGuiWindow):
         self.centralWidget.populate_tree(self.app.configManager)
         self.centralWidget.set_splitter(self.size())
         
-        self.setAutoSaveSettings()
+        # self.setAutoSaveSettings()
         
     def set_dirty(self):
         self.centralWidget.set_dirty(True)

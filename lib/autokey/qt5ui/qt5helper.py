@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
-from PyQt5.QtWidgets import QToolButton, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QToolButton, QMainWindow, QMessageBox, QLabel, QFileDialog
 from PyQt5 import QtCore, Qt
 
 from enum import Enum
@@ -29,18 +29,22 @@ def i18n(*args):
         r = r + str(element)
     return r
 
-class AKFileDialog:
+class AKUrlLabel(QLabel):
     def __init__(self):
-        pass
+        QLabel.__init__(self)
 
-class AKMessageBox(QMessageBox):
+class AKUrl(QUrl):
     def __init__(self):
-        pass
+        QUrl.__init__(self)
+
+class AKFileDialog(QFileDialog):
+    def __init__(self, parent):
+        QFileDialog.__init__(self, parent)
 
 class AKAboutApplicationDialog:
     def __init__(self, aboutData, window):
         pass
-
+    
 class AKStandardShortcut:
     New = QKeySequence("Ctrl+n")
     Save = QKeySequence("Ctrl+s")
@@ -237,3 +241,83 @@ class AKDialog(QDialog):
         
     def setPlainCaption(self, caption):
         pass
+
+class AKMessageBox(QMessageBox):
+    def themedMessageBoxIcon(icon):
+        icon_name = str()
+        if icon == QMessageBox.NoIcon:
+            return QIcon()
+        if icon == QMessageBox.Information:
+            icon_name = "dialog-information"
+        elif icon == QMessageBox.Warning:
+            icon_name = "dialog-warning"
+        elif icon == QMessageBox.Critical:
+            icon_name = "dialog-error"
+        else:
+            icon_name = ""
+        icon = QMessageBox.standardIcon(icon)
+        return icon
+    
+    def questionYesNo(parent, text, caption = None, buttonYes = None, buttonNo = None, dontaskAgainName = None, options = None):
+        # check whether should ask
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Question)
+        if caption == None:
+            dialog.setWindowTitle(i18n("Question"))
+        else:
+            dialog.setWindowTitle(caption)
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.Yes)
+        dialog.setEscapeButton(QMessageBox.No)
+        dialog.setText(text)
+        ret = dialog.exec_()
+        return ret
+
+    def questionYesNoCancel(parent, text, caption = None, buttonYes = None, buttonNo = None, buttonCancel = None, dontaskAgainName = None, options = None):
+        # check whether should ask
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Question)
+        if caption == None:
+            dialog.setWindowTitle(i18n("Question"))
+        else:
+            dialog.setWindowTitle(caption)
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        dialog.setDefaultButton(QMessageBox.Yes)
+        dialog.setEscapeButton(QMessageBox.Cancel)
+        dialog.setText(text)
+        ret = dialog.exec_()
+        return ret
+    
+    def detailedError(parent, text, details, caption = None, optons = None):
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Critical)
+        if caption == None:
+            dialog.setWindowTitle(i18n("Error"))
+        else:
+            dialog.setWindowTitle(caption)
+        dialog.setStandardButtons(QMessageBox.Ok)
+        dialog.setText(text)
+        dialog.setDetailText(details)
+        dialog.exec_()
+    
+    def about(parent, text, caption = None, options = None):
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Information)
+        if caption == None:
+            dialog.setWindowTitle(i18n("About"))
+        else:
+            dialog.setWindowTitle(caption)
+        dialog.setStandardButtons(QMessageBox.Ok)
+        dialog.setText(text)
+        dialog.exec_()
+        
+    def error(parent, text, caption = None, options = None):
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Critical)
+        if caption == None:
+            dialog.setWindowTitle(i18n("Error"))
+        else:
+            dialog.setWindowTitle(caption)
+        dialog.setStandardButtons(QMessageBox.Ok)
+        dialog.setText(text)
+        dialog.exec_()

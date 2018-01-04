@@ -18,7 +18,7 @@
 from . import common
 common.USING_QT5 = True
 
-import sys, os, logging, subprocess, time
+import sys, os, logging, logging.handlers, subprocess, time, queue
 import logging.handlers
 
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
@@ -40,6 +40,8 @@ COPYRIGHT = """(c) 2009-2012 Chris Dekter
 (c) 2017 Xu Zhao"""
 TEXT = ""
 
+APP = None
+
 class Application:
     """
     Main application class; starting and stopping of the application is controlled
@@ -48,6 +50,7 @@ class Application:
     
     def __init__(self):
         self.app = QApplication(sys.argv)
+        APP = self.app
         try:
             # Initialise config dir
             if not os.path.exists(CONFIG_DIR):
@@ -138,8 +141,8 @@ class Application:
         if ConfigManager.SETTINGS[IS_FIRST_RUN] or configure:
             ConfigManager.SETTINGS[IS_FIRST_RUN] = False
             self.show_configure()
-        self.handler = CallBackEventHander()
-        kbChangeFilter = KeyBoardChangeFilter(self.service.mediator.interface)
+        self.handler = CallbackEventHandler()
+        kbChangeFilter = KeyboardChangeFilter(self.service.mediator.interface)
         self.app.installEventFilter(kbChangeFilter)
 
     def init_global_hotkeys(self, configManager):
@@ -286,8 +289,8 @@ class CallbackEventHandler(QObject):
                 logging.warn("callback event failed: %r %r", callback, args, exc_info=True)
 
     def postEventWithCallback(self, callback, *args):
-        self.queue.put((callback, args))
-        app = KApplication.kApplication()
+        self.queue.put((callback, args))()
+        app = APP
         app.postEvent(self, QEvent(QEvent.User))
 
         

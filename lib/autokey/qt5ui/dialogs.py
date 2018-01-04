@@ -20,6 +20,7 @@ import logging, sys, os, re
 from .qt5helper import i18n, AKMessageBox, AKDialog, AKPageDialog, AKIcon
 from PyQt5.QtWidgets import QListWidgetItem, QWidget, QApplication
 from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtCore import Qt
 
 __all__ = ["validate", "EMPTY_FIELD_REGEX", "AbbrSettingsDialog", "HotkeySettingsDialog", "WindowFilterSettingsDialog", "RecordDialog"]
 
