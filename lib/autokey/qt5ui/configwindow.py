@@ -350,7 +350,7 @@ class ScriptPage(QWidget, scriptpage.Ui_ScriptPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMARY, msg)
+            AKMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMARY, msg)
                 
         return len(errors) == 0
         
@@ -451,7 +451,7 @@ class PhrasePage(QWidget, phrasepage.Ui_PhrasePage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
+            AKMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         
@@ -540,7 +540,7 @@ class FolderPage(QWidget, folderpage.Ui_FolderPage):
         
         if errors:
             msg = i18n(PROBLEM_MSG_SECONDARY, '\n'.join([str(e) for e in errors]))
-            # KMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
+            AKMessageBox.detailedError(self.window(), PROBLEM_MSG_PRIMAR, msg)
                 
         return len(errors) == 0
         
@@ -643,12 +643,12 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
     def promptToSave(self):
         if ConfigManager.SETTINGS[PROMPT_TO_SAVE]:
-            result = KMessageBox.questionYesNoCancel(self.window(),
+            result = AKMessageBox.questionYesNoCancel(self.window(),
                         i18n("There are unsaved changes. Would you like to save them?"))
         
-            if result == KMessageBox.Yes:
+            if result == AKMessageBox.Yes:
                 return self.on_save()
-            elif result == KMessageBox.Cancel:
+            elif result == AKMessageBox.Cancel:
                 return True
         else:
             # don't prompt, just save
@@ -657,15 +657,15 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
     # ---- Signal handlers
     
     def on_treeWidget_customContextMenuRequested(self, position):
-        factory = self.topLevelWidget().guiFactory()
-        menu = factory.container("Context", self.topLevelWidget())
+        factory = self.window().guiFactory()
+        menu = factory.container("Context", self.window())
         menu.popup(QCursor.pos())
         
     def on_treeWidget_itemChanged(self, item, column):
         if item is self.treeWidget.selectedItems()[0] and column == 0:
             newText = str(item.text(0))
             if validate(not EMPTY_FIELD_REGEX.match(newText), i18n("The name can't be empty."),
-                        None, self.topLevelWidget()):
+                        None, self.window()):
 
                 self.parentWidget().app.monitor.suspend()
                 self.stack.currentWidget().set_item_title(newText)
@@ -696,26 +696,26 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
                 self.stack.setCurrentIndex(2)
                 self.scriptPage.load(modelItem)
                 
-            self.topLevelWidget().update_actions(modelItems, True)
+            self.window().update_actions(modelItems, True)
             self.set_dirty(False)
             self.parentWidget().cancel_record()
             
         else:
-            self.topLevelWidget().update_actions(modelItems, False)
+            self.window().update_actions(modelItems, False)
         
     def on_new_topfolder(self):
-        result = KMessageBox.questionYesNoCancel(self.topLevelWidget(),
+        result = AKMessageBox.questionYesNoCancel(self.window(),
                     i18n("Create folder in the default location?"),
                     "Create Folder", KStandardGuiItem.yes(),
-                    KGuiItem(i18n("Create Elsewhere")))
+                    AKGuiItem(i18n("Create Elsewhere")))
         
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
 
-        if result == KMessageBox.Yes:
+        if result == AKMessageBox.Yes:
             self.__createFolder(None)
 
-        elif result != KMessageBox.Cancel:
-            # path = KFileDialog.getExistingDirectory(KUrl(), self.topLevelWidget())
+        elif result != AKMessageBox.Cancel:
+            path = AKFileDialog.getExistingDirectory(KUrl(), self.window())
             path = ""
 
             if path != "":
@@ -725,11 +725,11 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
                 newItem = FolderWidgetItem(None, folder)
                 self.treeWidget.addTopLevelItem(newItem)
                 self.configManager.folders.append(folder)
-                self.topLevelWidget().app.config_altered(True)
+                self.window().app.config_altered(True)
 
-            self.topLevelWidget().app.monitor.unsuspend()
+            self.window().app.monitor.unsuspend()
         else:
-            self.topLevelWidget().app.monitor.unsuspend()
+            self.window().app.monitor.unsuspend()
 
     
     def on_new_folder(self):
@@ -739,7 +739,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
     def __createFolder(self, parentItem):
         folder = model.Folder("New Folder")
         newItem = FolderWidgetItem(parentItem, folder)
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
 
         if parentItem is not None:
             parentFolder = self.__extractData(parentItem)
@@ -749,7 +749,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
             self.configManager.folders.append(folder)
         
         folder.persist()
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
 
         self.treeWidget.sortItems(0, Qt.AscendingOrder)
         self.treeWidget.setCurrentItem(newItem)
@@ -757,7 +757,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.on_rename()
         
     def on_new_phrase(self):
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
         parentItem = self.treeWidget.selectedItems()[0]
         parent = self.__extractData(parentItem)
         
@@ -766,7 +766,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         parent.add_item(phrase)
         phrase.persist()
 
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
         self.treeWidget.sortItems(0, Qt.AscendingOrder)
         self.treeWidget.setCurrentItem(newItem)
         self.treeWidget.setItemSelected(parentItem, False)
@@ -774,7 +774,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.on_rename()      
         
     def on_new_script(self):
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
         parentItem = self.treeWidget.selectedItems()[0]
         parent = self.__extractData(parentItem)
         
@@ -783,7 +783,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         parent.add_item(script)
         script.persist()
 
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
         self.treeWidget.sortItems(0, Qt.AscendingOrder)
         self.treeWidget.setCurrentItem(newItem)
         self.treeWidget.setItemSelected(parentItem, False)
@@ -822,10 +822,10 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
             newItem = ScriptWidgetItem(parentItem, newObj)
 
         parent.add_item(newObj)
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
         newObj.persist()
         
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
         self.treeWidget.sortItems(0, Qt.AscendingOrder)
         self.treeWidget.setCurrentItem(newItem)
         self.treeWidget.setItemSelected(parentItem, False)
@@ -834,20 +834,20 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
     def on_cut(self):
         self.cutCopiedItems = self.__getSelection()
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
         
         sourceItems = self.treeWidget.selectedItems()
         result = [f for f in sourceItems if f.parent() not in sourceItems]
         for item in result:
             self.__removeItem(item)
 
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
         self.parentWidget().app.config_altered(False)
         
     def on_paste(self):
         parentItem = self.treeWidget.selectedItems()[0]
         parent = self.__extractData(parentItem)
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
         
         newItems = []
         for item in self.cutCopiedItems:
@@ -873,12 +873,12 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.cutCopiedItems = []
         for item in newItems:
             self.treeWidget.setItemSelected(item, True)
-        self.topLevelWidget().app.monitor.unsuspend()
+        self.window().app.monitor.unsuspend()
         self.parentWidget().app.config_altered(False)
 
     def on_delete(self):
         widgetItems = self.treeWidget.selectedItems()
-        self.topLevelWidget().app.monitor.suspend()
+        self.window().app.monitor.suspend()
 
         if len(widgetItems) == 1:
             widgetItem = widgetItems[0]
@@ -890,14 +890,14 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         else:
             msg = i18n("Are you sure you want to delete the %1 selected folders/items?", str(len(widgetItems)))
 
-        result = KMessageBox.questionYesNo(self.topLevelWidget(), msg)
+        result = AKMessageBox.questionYesNo(self.window(), msg)
 
-        if result == KMessageBox.Yes:
+        if result == AKMessageBox.Yes:
             for widgetItem in widgetItems:
                 self.__removeItem(widgetItem)
 
-        self.topLevelWidget().app.monitor.unsuspend()
-        if result == KMessageBox.Yes:
+        self.window().app.monitor.unsuspend()
+        if result == AKMessageBox.Yes:
             self.parentWidget().app.config_altered(False)
             
     def on_rename(self):
@@ -908,7 +908,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         if self.stack.currentWidget().validate():
             self.parentWidget().app.monitor.suspend()
             persistGlobal = self.stack.currentWidget().save()
-            self.topLevelWidget().save_completed(persistGlobal)
+            self.window().save_completed(persistGlobal)
             self.set_dirty(False)
             
             item = self.treeWidget.selectedItems()[0]
@@ -926,8 +926,8 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
         self.parentWidget().cancel_record()
 
     def on_save_log(self):
-        #fileName = KFileDialog.getSaveFileName(KUrl(), "", self.parentWidget(),
-        #            "Save log file")
+        fileName = AKFileDialog.getSaveFileName(KUrl(), "", self.parentWidget(),
+                    "Save log file")
         fileName = ""
 
         if fileName != "":
@@ -1034,7 +1034,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
             
     def __deleteHotkeys(self, theItem):
         if model.TriggerMode.HOTKEY in theItem.modes:
-            self.topLevelWidget().app.hotkey_removed(theItem)
+            self.window().app.hotkey_removed(theItem)
 
         if isinstance(theItem, model.Folder):
             for subFolder in theItem.folders:
@@ -1042,7 +1042,7 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
 
             for item in theItem.items:
                 if model.TriggerMode.HOTKEY in item.modes:
-                    self.topLevelWidget().app.hotkey_removed(item)
+                    self.window().app.hotkey_removed(item)
         
         
 

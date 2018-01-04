@@ -29,6 +29,10 @@ def i18n(*args):
         r = r + str(element)
     return r
 
+class AKFileDialog:
+    def __init__(self):
+        pass
+
 class AKMessageBox(QMessageBox):
     def __init__(self):
         pass
