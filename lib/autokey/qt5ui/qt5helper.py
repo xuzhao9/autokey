@@ -18,7 +18,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
-from PyQt5.QtWidgets import QToolButton, QMainWindow
+from PyQt5.QtWidgets import QToolButton, QMainWindow, QMessageBox
 from PyQt5 import QtCore, Qt
 
 from enum import Enum
