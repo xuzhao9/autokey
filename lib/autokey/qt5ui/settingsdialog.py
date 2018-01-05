@@ -19,7 +19,7 @@ import sys
 
 from PyQt5.QtWidgets import QWidget
 
-from .qt5helper import i18n, AKFileDialog, AKAutostart, AKPageDialog
+from .qt5helper import i18n, AKFileDialog, AKPageDialog
 
 from ..configmanager import *
 from .. import iomediator, interface, model

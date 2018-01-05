@@ -159,20 +159,7 @@ class AKXmlGuiWindow(QMainWindow):
     # TODO: implement this
     def setAutoSaveSettings(self):
         pass
-
-class AKMessageBox:
-    def __init__(self):
-        pass
-
-class AKAutostart:
-    def __init__(self):
-        pass
-
-class AKFileDialog:
-    def __init__(self):
-        pass
        
-# done.
 class AKActionMenu(AKAction):
     def __init__(self, parent, title, icon = None):
         if icon == None:
@@ -212,10 +199,6 @@ class AKMenu(QMenu):
         action.setDefaultWidget(titleButton)
         self.insertAction(None, action) # before is none in this case
         return action
-    
-class AKNotification:
-    def __init__(self):
-        pass
 
 class AKToggleAction(AKAction):
     def __init__(self, parent, description, icon = None):

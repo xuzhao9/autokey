@@ -21,7 +21,7 @@
 # from PyQt4.QtCore import SIGNAL
 # from PyQt4.QtGui import QSystemTrayIcon
 
-from .qt5helper import i18n, AKNotification, AKSystemTrayIcon, AKIcon, AKToggleAction, AKStandardAction
+from .qt5helper import i18n, AKSystemTrayIcon, AKIcon, AKToggleAction, AKStandardAction
 
 from PyQt5.QtWidgets import QSystemTrayIcon
 
