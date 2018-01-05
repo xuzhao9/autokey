@@ -30,6 +30,7 @@ from . import service, monitor
 from .qt5ui.notifier import Notifier
 from .qt5ui.popupmenu import PopupMenu
 from .qt5ui.configwindow import ConfigWindow
+from .qt5ui.qt5helper import QtInit
 from .configmanager import *
 from .common import *
 
@@ -55,6 +56,8 @@ class Application:
             # Initialise logger
             rootLogger = logging.getLogger()
             rootLogger.setLevel(logging.DEBUG)
+            # Initialise Qt
+            QtInit()
 
             # Set default as INFO level
             handler = logging.handlers.RotatingFileHandler(LOG_FILE, 
@@ -69,10 +72,7 @@ class Application:
 
             self.initialise()
         except Exception as e:
-            # self.show_error_dialog("Fatal error starting AutoKey Qt5 App.\nError message: " + str(e))
-            print(str(e))
-            import traceback
-            traceback.print_tb(err.__traceback__)
+            self.show_error_dialog("Fatal error starting AutoKey Qt5 App.\nError message: " + str(e))
             logging.exception("Fatal error starting AutoKey Qt5 App: " + str(e))
             sys.exit(1)
 
@@ -140,7 +140,7 @@ class Application:
         self.handler = CallbackEventHandler(self.app)
         kbChangeFilter = KeyboardChangeFilter(self.service.mediator.interface)
         self.app.installEventFilter(kbChangeFilter)
-
+        
     def init_global_hotkeys(self, configManager):
         logging.info("Initialise global hotkeys")
         configManager.toggleServiceHotkey.set_closure(self.toggle_service)

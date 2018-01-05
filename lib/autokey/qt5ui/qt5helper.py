@@ -22,12 +22,41 @@ from PyQt5.QtWidgets import QToolButton, QMainWindow, QMessageBox, QLabel, QFile
 from PyQt5 import QtCore, Qt
 
 from enum import Enum
+import os
 
 def i18n(*args):
     r = str()
     for element in args:
         r = r + str(element)
     return r
+
+def QtInit():
+    path_list = QIcon.themeSearchPaths()
+    home_icon_path = os.path.join(os.environ.get('XDG_DATA_DIRS'), os.path.expanduser('~'), ".icons")
+    usr_local_icon_path = "/usr/local/share/icons"
+    usr_icon_path = "/usr/share/icons"
+    path_list.append(home_icon_path)
+    path_list.append(usr_local_icon_path)
+    path_list.append(usr_icon_path)
+    QIcon.setThemeSearchPaths(path_list)
+
+# Load the icon from the name
+class AKIcon(QIcon):
+    def fromTheme(name):
+        if QIcon.hasThemeIcon(name):
+            return QIcon.fromTheme(name)
+        # If cannot find icon in theme, try find it in autokey/config directory
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        autokey_config_path = os.path.join(dir_path, "../../../config/")
+        autokey_icon_loc = os.path.join(autokey_config_path, name+".svg")
+        if os.path.isfile(autokey_icon_loc):
+            icon = QIcon(autokey_icon_loc)
+            if not icon == None:
+                return icon
+        return QIcon()
+    def __init__(self, name):
+        icon = AKIcon.fromTheme(name)
+        QIcon.__init__(self, icon)
 
 class AKUrlLabel(QLabel):
     def __init__(self):
@@ -184,7 +213,6 @@ class AKMenu(QMenu):
         self.insertAction(None, action) # before is none in this case
         return action
     
-    
 class AKNotification:
     def __init__(self):
         pass
@@ -207,22 +235,14 @@ class AKStandardAction:
     
 class AKSystemTrayIcon(QSystemTrayIcon):
     def __init__(self, name):
-        QSystemTrayIcon.__init__(self)
-        self.icon = AKIcon(name)
-
-# Load the icon from the name
-class AKIcon(QIcon):
-    def __init__(self, name):
-        QIcon.__init__(self)
-        print("Loading icon:" + name)
-        self.icon_name = name
+        icon = AKIcon.fromTheme(name)
+        QSystemTrayIcon.__init__(self, icon)
 
 class AKPageDialog(QDialog):
     def __init__(self, name):
         pass
         
 class AKDialog(QDialog):
-
     Ok = 0x00000004
     Cancel = 0x00000020
 
