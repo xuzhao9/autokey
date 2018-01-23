@@ -159,6 +159,10 @@ class AKXmlGuiWindow(QMainWindow):
     # TODO: implement this
     def setAutoSaveSettings(self):
         pass
+
+    # TODO: implement this to support right-click
+    def guiFactory():
+        pass
        
 class AKActionMenu(AKAction):
     def __init__(self, parent, title, icon = None):
