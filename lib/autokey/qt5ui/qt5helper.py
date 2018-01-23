@@ -19,6 +19,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QDialog, QMenu, QSystemTrayIcon, QAction, QWidgetAction
 from PyQt5.QtWidgets import QToolButton, QMainWindow, QMessageBox, QLabel, QFileDialog
+from PyQt5.QtXml import QDomDocument
 from PyQt5 import QtCore, Qt
 
 from enum import Enum
@@ -129,7 +130,29 @@ class AKActionCollection(QObject):
         # Connect to the signals: no need to do this
         # emit inserted signal
         self.inserted.emit(action)
+
+class AKXmlGuiFactory(QObject):
+    def __init__(self):
+        QObject.__init__(self)
+        self.m_clients = list()
+
+    def removeClient(self, client):
+        # Do not remove client's GUI if we didn't build it
+        if (not (client == None)) or (not (client.guiFactory() == self)):
+            return
+        # Remove this client from the client list
+        self.m_clients.remove(client)
+        # Remove child clients first
+        childClients = list(client.childClients())
+        for child in childClients:
+            self.removeClient(child)
+        client.setFactory(None)
+        doc = client.xmlguiBuildDocument() # doc is a QDomDocument
+        # No need to check whether doc is null
     
+    def container(self, name, window):        
+        pass
+        
 class AKXmlGuiWindow(QMainWindow):
     ToolBar = 1
     Keys = 2
@@ -137,12 +160,24 @@ class AKXmlGuiWindow(QMainWindow):
     Save = 8
     Create = 16
     Default = ToolBar | Keys | StatusBar | Save | Create 
-
+    
     def __init__(self):
         QMainWindow.__init__(self)
         self.actions = AKActionCollection()
         self.showHelpMenu = True
-
+        self.guiFactory = AKXmlGuiFactory()
+        self.children = list()
+        self.m_buildDocument = QDomDocument()
+        
+    def xmlguiBuildDocument(self):
+        return self.m_buildDocument
+        
+    def setFactory(self, factory):        
+        self.guiFactory = factory
+    
+    def guiFactory(self):
+        return self.guiFactory
+    
     def setupGUI(self, options):
         # do nothing for now...
         pass
@@ -156,13 +191,15 @@ class AKXmlGuiWindow(QMainWindow):
     def setHelpMenuEnabled(self, showHelpMenu = True):
         self.showHelpMenu = showHelpMenu
 
+    # Child Clients
+    def childClients(self):
+        return self.children
+    
     # TODO: implement this
     def setAutoSaveSettings(self):
         pass
+    
 
-    # TODO: implement this to support right-click
-    def guiFactory():
-        pass
        
 class AKActionMenu(AKAction):
     def __init__(self, parent, title, icon = None):

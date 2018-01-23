@@ -658,8 +658,9 @@ class CentralWidget(QWidget, centralwidget.Ui_CentralWidget):
     
     def on_treeWidget_customContextMenuRequested(self, position):
         factory = self.window().guiFactory()
-        menu = factory.container("Context", self.window())
-        menu.popup(QCursor.pos())
+        # menu = factory.container("Context", self.window())
+        # menu.popup(QCursor.pos())
+        pass
         
     def on_treeWidget_itemChanged(self, item, column):
         if item is self.treeWidget.selectedItems()[0] and column == 0:
