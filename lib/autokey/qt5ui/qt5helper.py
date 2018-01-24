@@ -152,7 +152,11 @@ class AKXmlGuiFactory(QObject):
     
     def container(self, name, window):        
         pass
-        
+
+class AKToolBarHandler:
+    def __init__(self):
+        pass
+    
 class AKXmlGuiWindow(QMainWindow):
     ToolBar = 1
     Keys = 2
@@ -164,8 +168,9 @@ class AKXmlGuiWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.actions = AKActionCollection()
+        self.componentName = "autokey"
         self.showHelpMenu = True
-        self.guiFactory = AKXmlGuiFactory()
+        self.m_guiFactory = AKXmlGuiFactory()
         self.children = list()
         self.m_buildDocument = QDomDocument()
         
@@ -173,35 +178,57 @@ class AKXmlGuiWindow(QMainWindow):
         return self.m_buildDocument
         
     def setFactory(self, factory):        
-        self.guiFactory = factory
+        self.m_guiFactory = factory
     
     def guiFactory(self):
-        return self.guiFactory
+        return self.m_guiFactory
 
+    ## We do not have status bar for now.
     def createStandardStatusBarAction(self):
         pass
 
-    def setStandardToolBarMenuEnabled(self, val):
-        pass
-    
-    def statusBar(self):
-        return true
+    def setStandardToolBarMenuEnabled(self, enable):
+        if enable:
+            if not self.toolBarHandler == None:
+                return
+            else:
+                self.toolBarHandler = AKToolBarHandler()
+                self.guiFactory().addClient(self.toolBarHandler)
+        else:
+            if self.toolBarHandler == None:
+                return
+            self.guiFactory().removeClient(self.toolBarHandler)
+            self.toolBarHandler = None
+
+    def createGUI(self):
+        self.guiFactory().removeClient(this)
+        mb = self.menuBar()
+        # make sure to have an empty GUI
+        if not mb == None:
+            mb.clear()
+        # qDeleteAll(self.toolBars())
+        windowXmlFile = componentName() + QStringLiteral("ui.rc")
+        # loadStandardXmlFile()
+        # setXMLFile(windowXmlFile, true)
+        # sertXMLGUIBuildDocument(QDomDocument())
+        # self.guiFactory().reset()
+        # self.guiFactory().addClient(this)
     
     # options = AKXmlGuiWindow.Default ^ AKXmlGuiWindow.StandardWindowOptions(AKXmlGuiWindow.StatusBar)
     def setupGUI(self, options):
-        if options & Keys:
+        if options & AKXmlGuiWindow.Keys:
             # Setup Shortcuts
             pass
-        if (options & StatusBar) and statusBar():
+        if (options & AKXmlGuiWindow.StatusBar) and (not (self.statusBar() == None)):
             self.createStandardStatusBarAction()
-        if options & ToolBar:
+        if options & AKXmlGuiWindow.ToolBar:
             self.setStandardToolBarMenuEnabled(True)
 
-        if options & Create:
-            pass
+        if options & AKXmlGuiWindow.Create:
+            self.createGUI()
         
         # TODO: auto-save
-        if options & Save:
+        if options & AKXmlGuiWindow.Save:
             pass
         
     def StandardWindowOptions(option):
