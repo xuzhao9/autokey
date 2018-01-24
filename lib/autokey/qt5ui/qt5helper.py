@@ -177,10 +177,32 @@ class AKXmlGuiWindow(QMainWindow):
     
     def guiFactory(self):
         return self.guiFactory
-    
-    def setupGUI(self, options):
-        # do nothing for now...
+
+    def createStandardStatusBarAction(self):
         pass
+
+    def setStandardToolBarMenuEnabled(self, val):
+        pass
+    
+    def statusBar(self):
+        return true
+    
+    # options = AKXmlGuiWindow.Default ^ AKXmlGuiWindow.StandardWindowOptions(AKXmlGuiWindow.StatusBar)
+    def setupGUI(self, options):
+        if options & Keys:
+            # Setup Shortcuts
+            pass
+        if (options & StatusBar) and statusBar():
+            self.createStandardStatusBarAction()
+        if options & ToolBar:
+            self.setStandardToolBarMenuEnabled(True)
+
+        if options & Create:
+            pass
+        
+        # TODO: auto-save
+        if options & Save:
+            pass
         
     def StandardWindowOptions(option):
         return option
